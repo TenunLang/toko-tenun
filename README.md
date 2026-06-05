@@ -1,93 +1,79 @@
 # Toko Tenun & Batik
 
-Contoh **e-commerce lengkap** yang dibangun 100% dengan bahasa [Tenun](https://github.com/TenunLang/Tenun). Struktur **MVC**, memakai banyak modul resmi sekaligus.
+E-commerce **real use case** yang dibangun 100% dengan bahasa [Tenun](https://github.com/TenunLang/Tenun). Struktur **ala Laravel** (MVC + driver + migration/seeder + artisan), memakai banyak modul resmi.
 
-## Modul yang dipakai
+## Modul
 
 | Modul | Untuk |
 |-------|-------|
 | `web` | Routing, middleware, cookie, static, response |
-| `orm` | Model + CRUD ke PostgreSQL (produk, pengguna, pesanan) |
-| `tampilan` (Batik) | Template HTML `.batik` |
-| `auth` | Hash & verifikasi sandi (PBKDF2) |
-| `sesi` | Login session + keranjang (cookie) |
+| `orm` | Model + CRUD ke PostgreSQL |
+| `tampilan` (Batik) | Template `.batik` |
+| `auth` | Hash & verifikasi sandi |
+| `sesi` | Login session + keranjang |
 | `mail` | Email konfirmasi pesanan |
-| `socketio` | (bonus) notifikasi realtime — `src/notif.tenun` |
+| `redis` | Cache API produk (graceful bila Redis mati) |
 
-## Struktur (MVC)
+## Struktur (ala Laravel)
 
 ```
 toko-tenun/
-  src/
-    app.tenun              entry: impor + rute + setup + layani
-    config.tenun           koneksi DB + helper (render, sesi, rupiah)
-    model/
-      produk.tenun         skema + akses data produk
-      pengguna.tenun       skema + akses data pengguna
-      pesanan.tenun        skema + akses data pesanan
-    controller/
-      produk_ctl.tenun     beranda, detail, API
-      auth_ctl.tenun       daftar, masuk, keluar
-      keranjang_ctl.tenun  tambah, lihat, checkout
-      admin_ctl.tenun      tambah produk
-    notif.tenun            (bonus) server Socket.IO realtime
-  view/                    *.batik (tata, beranda, kartu, produk, masuk, daftar, keranjang, admin)
-  publik/gaya.css
+  index.tenun                inti: muat semua driver + lapisan aplikasi
+  artisan.tenun              runner CLI (migrasi / seed / layani)
+  tenun.json                 dependensi + "skrip" (mirip package.json)
+  driver/                    include modul (provider)
+    database.tenun  cache.tenun  view.tenun  identitas.tenun  mailer.tenun  http.tenun
+  app/
+    config.tenun
+    Models/                  Produk · Pengguna · Pesanan
+    Http/
+      Middleware/Middleware.tenun     mwKeamanan · mwAuth
+      Controllers/          Produk · Auth · Keranjang · Pesanan · Admin
+  database/
+    migrations/             01_buat_produk · 02_buat_pengguna · 03_buat_pesanan
+    seeders/                ProdukSeeder
+    Migrator.tenun          jalankanMigrasi() · jalankanSeed()
+  routes/web.tenun          daftarRute() — bind URL ke controller + middleware
+  resources/views/          *.batik
+  public/gaya.css
 ```
-
-Controller tidak menyentuh SQL — semua lewat fungsi model. View hanya Batik.
 
 ## Jalankan
 
-Prasyarat: **PostgreSQL** di `localhost:5432` (user `postgres`, tanpa sandi, database `postgres`). Opsional: **Mailpit** di `:1025` untuk melihat email.
+Prasyarat: **PostgreSQL** di `localhost:5432` (`postgres`, tanpa sandi). Opsional: **Redis** `:6379` (cache), **Mailpit** `:1025` (email).
 
 ```
-tenun add web
-tenun add orm
-tenun add tampilan
-tenun add auth
-tenun add sesi
-tenun add mail
-tenun run src/app.tenun       # http://localhost:8080
+tenun add web orm tampilan auth sesi mail redis
+
+tenun jalan migrasi     # buat tabel        (= tenun run artisan.tenun migrasi)
+tenun jalan seed        # data contoh
+tenun jalan layani      # server http://localhost:8080
 ```
 
-Tabel dibuat otomatis + 4 produk contoh ditambahkan saat pertama jalan.
+`tenun jalan <skrip>` membaca bagian `"skrip"` di `tenun.json` (mirip `npm run` / `bun run`).
 
-## Fitur
+## Fitur (real use case)
 
-- Katalog produk (tenun & batik) dari database
-- Halaman detail produk
-- Daftar & masuk (sandi di-hash, session cookie HttpOnly)
-- Keranjang per pengguna
-- Checkout → simpan pesanan + kirim email konfirmasi
-- Halaman admin tambah produk (khusus login)
-- API JSON: `GET /api/produk`
-
-## Rute
-
-```
-GET  /                       beranda (katalog)
-GET  /produk/:id             detail produk
-GET  /api/produk             daftar produk (JSON)
-GET  /daftar  POST /daftar   registrasi
-GET  /masuk   POST /masuk    login
-GET  /keluar                 logout
-GET  /keranjang/tambah/:id   tambah ke keranjang
-GET  /keranjang              lihat keranjang
-POST /checkout               buat pesanan + email
-GET  /admin   POST /admin    tambah produk (login)
-```
+- Katalog + **pencarian** (`?cari=`) & **filter jenis** (`?jenis=tenun|batik`)
+- Detail produk, API JSON `GET /api/produk` (di-cache Redis, header `X-Cache`)
+- Registrasi & login (sandi di-hash, validasi email, session cookie HttpOnly)
+- **Middleware**: header keamanan (`mwKeamanan`) + proteksi rute login (`mwAuth`)
+- Keranjang dengan **jumlah** + hapus item (per-sesi)
+- Checkout: cek stok, kurangi stok, simpan pesanan, kirim email
+- **Riwayat pesanan** per pengguna
+- **Flash message** antar-redirect
+- Admin tambah produk
 
 ## Bonus realtime
 
 ```
 tenun add socketio
-tenun run src/notif.tenun     # Socket.IO di :3001
+tenun run notif.tenun     # Socket.IO :3001  (file terpisah)
 ```
 
 ## Produksi
 
-Server berjalan HTTP. Untuk HTTPS, terminasi TLS di reverse proxy (Caddy/nginx).
+HTTP; untuk HTTPS terminasi TLS di reverse proxy (Caddy/nginx).
 
 ## Lisensi
 
