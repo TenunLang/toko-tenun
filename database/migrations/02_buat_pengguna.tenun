@@ -1,0 +1,7 @@
+// Migrasi: tabel pengguna.
+fungsi naikPengguna(): kosong {
+    biar d: bulat = db();
+    orm_sinkron(d, modelPengguna());
+    orm_tutup(d);
+    cetak("  migrasi: pengguna");
+}

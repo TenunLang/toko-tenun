@@ -1,0 +1,32 @@
+// index — inti aplikasi. Memuat semua driver (modul) + lapisan aplikasi.
+// Dipakai oleh artisan.tenun. Tidak menjalankan apa pun sendiri.
+
+// Driver (modul pihak ketiga di-include di sini)
+impor "./driver/http.tenun";
+impor "./driver/database.tenun";
+impor "./driver/cache.tenun";
+impor "./driver/view.tenun";
+impor "./driver/identitas.tenun";
+impor "./driver/mailer.tenun";
+
+// Lapisan aplikasi (MVC)
+impor "./app/config.tenun";
+impor "./app/Models/Produk.tenun";
+impor "./app/Models/Pengguna.tenun";
+impor "./app/Models/Pesanan.tenun";
+impor "./app/Http/Middleware/Middleware.tenun";
+impor "./app/Http/Controllers/ProdukController.tenun";
+impor "./app/Http/Controllers/AuthController.tenun";
+impor "./app/Http/Controllers/KeranjangController.tenun";
+impor "./app/Http/Controllers/PesananController.tenun";
+impor "./app/Http/Controllers/AdminController.tenun";
+
+// Migrasi & seeder
+impor "./database/migrations/01_buat_produk.tenun";
+impor "./database/migrations/02_buat_pengguna.tenun";
+impor "./database/migrations/03_buat_pesanan.tenun";
+impor "./database/seeders/ProdukSeeder.tenun";
+impor "./database/Migrator.tenun";
+
+// Rute
+impor "./routes/web.tenun";

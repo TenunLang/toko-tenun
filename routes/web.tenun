@@ -1,0 +1,33 @@
+// Definisi rute (mengikat URL -> controller) + middleware global.
+
+fungsi cGaya(): teks {
+    kembali web_berkas("public/gaya.css");
+}
+
+fungsi daftarRute(): kosong {
+    // Middleware (urutan jalan)
+    web_pakai(web_log);
+    web_pakai(mwKeamanan);
+    web_pakai(mwAuth);
+
+    web_statik("public");
+
+    // Publik
+    web_get("/", cBeranda);
+    web_get("/produk/:id", cDetailProduk);
+    web_get("/api/produk", cApiProduk);
+    web_get("/daftar", cFormDaftar);
+    web_post("/daftar", cProsesDaftar);
+    web_get("/masuk", cFormMasuk);
+    web_post("/masuk", cProsesMasuk);
+    web_get("/keluar", cKeluar);
+
+    // Perlu login (dijaga mwAuth)
+    web_get("/keranjang", cLihatKeranjang);
+    web_get("/keranjang/tambah/:id", cTambahKeranjang);
+    web_get("/keranjang/hapus/:id", cHapusKeranjang);
+    web_post("/checkout", cCheckout);
+    web_get("/pesanan", cRiwayat);
+    web_get("/admin", cFormAdmin);
+    web_post("/admin", cProsesAdmin);
+}

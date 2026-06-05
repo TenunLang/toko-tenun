@@ -1,0 +1,12 @@
+// Seeder: data contoh produk.
+fungsi seedProduk(): kosong {
+    kalau produkJumlah() > 0 {
+        cetak("  seed: produk dilewati (sudah ada data)");
+        kembali;
+    }
+    produkBuat(peta{ "nama": "Tenun Ikat Sumba", "jenis": "tenun", "harga": "850000", "stok": "5", "deskripsi": "Tenun ikat tangan motif kuda Sumba." });
+    produkBuat(peta{ "nama": "Batik Tulis Solo", "jenis": "batik", "harga": "650000", "stok": "8", "deskripsi": "Batik tulis halus motif parang." });
+    produkBuat(peta{ "nama": "Tenun Songket Palembang", "jenis": "tenun", "harga": "1200000", "stok": "3", "deskripsi": "Songket benang emas khas Palembang." });
+    produkBuat(peta{ "nama": "Batik Cap Pekalongan", "jenis": "batik", "harga": "350000", "stok": "12", "deskripsi": "Batik cap warna cerah pesisir." });
+    cetak("  seed: 4 produk ditambahkan");
+}

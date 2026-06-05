@@ -1,0 +1,68 @@
+// Controller Produk — beranda (cari + filter), detail, API.
+
+fungsi cBeranda(): teks {
+    biar cariKata: teks = web_kueri("cari");
+    biar jenis: teks = web_kueri("jenis");
+    biar daftar: []peta = produkSemua();
+    biar kartu: teks = "";
+    biar jml: bulat = 0;
+    untuk i dari 0 sampai panjang(daftar) {
+        biar p: peta = daftar[i];
+        biar cocok: bool = benar;
+        kalau panjangTeks(cariKata) > 0 {
+            kalau cari(p["nama"], cariKata) < 0 {
+                cocok = salah;
+            }
+        }
+        kalau panjangTeks(jenis) > 0 {
+            kalau p["jenis"] != jenis {
+                cocok = salah;
+            }
+        }
+        kalau cocok {
+            kartu = kartu + tampil("kartu.batik", peta{
+                "id": p["id"], "nama": esc(p["nama"]), "jenis": p["jenis"],
+                "harga": rupiah(p["harga"]), "stok": p["stok"]
+            });
+            jml = jml + 1;
+        }
+    }
+    kalau jml == 0 {
+        kartu = "<p class=\"kosong\">Tidak ada produk yang cocok.</p>";
+    }
+    kembali render("Beranda", tampil("beranda.batik", peta{
+        "produk": kartu, "cari": esc(cariKata)
+    }));
+}
+
+fungsi cDetailProduk(): teks {
+    biar p: peta = produkCari(web_param("id"));
+    kalau petaPunya(p, "id") == salah {
+        web_status(404);
+        kembali render("Tidak ditemukan", "<p>Produk tidak ada.</p>");
+    }
+    kembali render(p["nama"], tampil("produk.batik", peta{
+        "id": p["id"], "nama": esc(p["nama"]), "jenis": p["jenis"],
+        "harga": rupiah(p["harga"]), "stok": p["stok"], "deskripsi": esc(p["deskripsi"])
+    }));
+}
+
+fungsi cApiProduk(): teks {
+    // Cache Redis: layani dari cache bila ada.
+    biar tembolok: teks = cacheGet("produk:api");
+    kalau panjangTeks(tembolok) > 0 {
+        headerKan("X-Cache", "HIT");
+        kembali web_json(tembolok);
+    }
+    biar daftar: []peta = produkSemua();
+    biar js: teks = "[";
+    untuk i dari 0 sampai panjang(daftar) {
+        biar p: peta = daftar[i];
+        kalau i > 0 { js = js + ","; }
+        js = js + "{\"id\":" + p["id"] + ",\"nama\":\"" + p["nama"] + "\",\"jenis\":\"" + p["jenis"] + "\",\"harga\":" + p["harga"] + ",\"stok\":" + p["stok"] + "}";
+    }
+    js = js + "]";
+    cacheSet("produk:api", js);
+    headerKan("X-Cache", "MISS");
+    kembali web_json(js);
+}

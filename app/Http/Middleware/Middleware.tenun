@@ -1,0 +1,26 @@
+// Middleware aplikasi. Tiap middleware: fungsi(): teks.
+// Kembalikan "" untuk lanjut, atau respons (teks) untuk menghentikan rantai.
+
+// Header keamanan dasar untuk semua respons.
+fungsi mwKeamanan(): teks {
+    headerKan("X-Content-Type-Options", "nosniff");
+    headerKan("X-Frame-Options", "DENY");
+    headerKan("Referrer-Policy", "no-referrer");
+    kembali "";
+}
+
+// Lindungi rute tertentu: wajib login.
+fungsi mwAuth(): teks {
+    biar j: teks = web_jalur_kini();
+    biar perlu: bool = mulaiDengan(j, "/admin")
+        || mulaiDengan(j, "/keranjang")
+        || j == "/checkout"
+        || j == "/pesanan";
+    kalau perlu {
+        kalau panjangTeks(penggunaKini()) == 0 {
+            flashSet("Silakan masuk dulu.");
+            kembali web_redirect("/masuk");
+        }
+    }
+    kembali "";
+}

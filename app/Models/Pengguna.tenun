@@ -1,4 +1,4 @@
-// Model Pengguna — skema + akses data.
+// Model Pengguna.
 
 fungsi modelPengguna(): peta {
     biar m: peta = orm_model("pengguna");
@@ -19,11 +19,5 @@ fungsi penggunaCari(email: teks): peta {
 fungsi penggunaBuat(nama: teks, email: teks, sandiHash: teks): kosong {
     biar d: bulat = db();
     orm_simpan(d, modelPengguna(), peta{ "nama": nama, "email": email, "sandi": sandiHash });
-    orm_tutup(d);
-}
-
-fungsi penggunaSiapkan(): kosong {
-    biar d: bulat = db();
-    orm_sinkron(d, modelPengguna());
     orm_tutup(d);
 }

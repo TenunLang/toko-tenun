@@ -1,1 +1,22 @@
-{"nama":"toko-tenun","versi":"0.1.0","butuh":{"web":"^0.1.0","orm":"^0.1.0","tampilan":"^0.1.0","auth":"^0.1.0","sesi":"^0.1.0","mail":"^0.1.0"}}
+{
+  "nama": "toko-tenun",
+  "versi": "0.1.0",
+  "deskripsi": "Toko Tenun & Batik — e-commerce MVC dengan bahasa Tenun.",
+  "lisensi": "MIT",
+  "penulis": "TenunLang",
+  "berkas": "index.tenun",
+  "butuh": {
+    "web": "^0.1.0",
+    "orm": "^0.1.0",
+    "tampilan": "^0.1.0",
+    "auth": "^0.1.0",
+    "sesi": "^0.1.0",
+    "mail": "^0.1.0",
+    "redis": "^0.1.0"
+  },
+  "skrip": {
+    "migrasi": "run artisan.tenun migrasi",
+    "seed": "run artisan.tenun seed",
+    "layani": "run artisan.tenun layani"
+  }
+}

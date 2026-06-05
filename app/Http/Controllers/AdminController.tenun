@@ -1,15 +1,13 @@
-// Controller Admin — tambah produk (hanya untuk pengguna login).
+// Controller Admin — tambah produk.
 
 fungsi cFormAdmin(): teks {
-    kalau panjangTeks(penggunaKini()) == 0 {
-        kembali web_redirect("/masuk");
-    }
     kembali render("Admin", tampil("admin.batik", peta{}));
 }
 
 fungsi cProsesAdmin(): teks {
-    kalau panjangTeks(penggunaKini()) == 0 {
-        kembali web_redirect("/masuk");
+    kalau panjangTeks(web_form("nama")) == 0 || panjangTeks(web_form("harga")) == 0 {
+        flashSet("Nama dan harga wajib diisi.");
+        kembali web_redirect("/admin");
     }
     produkBuat(peta{
         "nama": web_form("nama"),
@@ -18,5 +16,6 @@ fungsi cProsesAdmin(): teks {
         "stok": web_form("stok"),
         "deskripsi": web_form("deskripsi")
     });
+    flashSet("Produk ditambahkan.");
     kembali web_redirect("/");
 }

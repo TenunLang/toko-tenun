@@ -1,0 +1,23 @@
+// Migrator — menjalankan semua migrasi & seeder secara berurutan.
+
+fungsi jalankanMigrasi(): kosong {
+    kalau db() < 0 {
+        cetak("[migrasi] GAGAL konek Postgres di 5432");
+        kembali;
+    }
+    cetak("Menjalankan migrasi...");
+    naikProduk();
+    naikPengguna();
+    naikPesanan();
+    cetak("Migrasi selesai.");
+}
+
+fungsi jalankanSeed(): kosong {
+    kalau db() < 0 {
+        cetak("[seed] GAGAL konek Postgres di 5432");
+        kembali;
+    }
+    cetak("Menjalankan seeder...");
+    seedProduk();
+    cetak("Seeder selesai.");
+}

@@ -1,0 +1,15 @@
+<section class="hero">
+  <h1>Warisan Kain Nusantara</h1>
+  <p class="sub">Tenun ikat &amp; batik tulis pilihan, langsung dari pengrajin.</p>
+</section>
+<form class="cari" method="get" action="/">
+  <input type="text" name="cari" value="{{cari}}" placeholder="Cari kain...">
+  <button class="tombol" type="submit">Cari</button>
+  <a class="filter" href="/?jenis=tenun">Tenun</a>
+  <a class="filter" href="/?jenis=batik">Batik</a>
+  <a class="filter" href="/">Semua</a>
+</form>
+<h2>Koleksi</h2>
+<div class="grid">
+{{produk}}
+</div>

@@ -1,4 +1,4 @@
-// Model Pesanan — skema + akses data.
+// Model Pesanan.
 
 fungsi modelPesanan(): peta {
     biar m: peta = orm_model("pesanan");
@@ -16,8 +16,16 @@ fungsi pesananBuat(pembeli: teks, ringkasan: teks, total: teks): kosong {
     orm_tutup(d);
 }
 
-fungsi pesananSiapkan(): kosong {
+// Riwayat pesanan milik seorang pembeli.
+fungsi pesananMilik(pembeli: teks): []peta {
     biar d: bulat = db();
-    orm_sinkron(d, modelPesanan());
+    biar hasil: teks = orm_model_cari(d, modelPesanan(), "pembeli", pembeli);
+    biar n: bulat = orm_baris(hasil);
+    biar m: peta = modelPesanan();
+    biar daftar: []peta = [];
+    untuk i dari 0 sampai n {
+        daftar = dorong(daftar, orm_baris_peta(m, hasil, i));
+    }
     orm_tutup(d);
+    kembali daftar;
 }

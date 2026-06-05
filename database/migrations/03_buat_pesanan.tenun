@@ -1,0 +1,7 @@
+// Migrasi: tabel pesanan.
+fungsi naikPesanan(): kosong {
+    biar d: bulat = db();
+    orm_sinkron(d, modelPesanan());
+    orm_tutup(d);
+    cetak("  migrasi: pesanan");
+}

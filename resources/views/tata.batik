@@ -12,10 +12,11 @@
   <nav>
     <a href="/">Beranda</a>
     <a href="/keranjang">Keranjang</a>
-    {{#jika pengguna}}<a href="/admin">Admin</a> <span class="halo">Halo, {{pengguna}}</span> <a href="/keluar">Keluar</a>{{/jika pengguna}}
+    {{#jika pengguna}}<a href="/pesanan">Pesanan</a> <a href="/admin">Admin</a> <span class="halo">Halo, {{pengguna}}</span> <a href="/keluar">Keluar</a>{{/jika pengguna}}
     {{#kecuali pengguna}}<a href="/masuk">Masuk</a> <a href="/daftar">Daftar</a>{{/kecuali pengguna}}
   </nav>
 </header>
+{{#jika flash}}<div class="flash">{{flash}}</div>{{/jika flash}}
 <main>{{konten}}</main>
 <footer>Toko Tenun &amp; Batik — contoh e-commerce dibangun 100% dengan bahasa Tenun (web · orm · tampilan · auth · sesi · mail).</footer>
 </body>
