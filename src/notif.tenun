@@ -1,0 +1,21 @@
+// Bonus: server notifikasi realtime (Socket.IO) — proses terpisah dari app web.
+// Butuh: tenun add socketio (otomatis menarik websocket).
+// Jalankan: tenun run src/notif.tenun   (port 3001)
+//
+// Klien (socket.io-client v4):
+//   const s = io("http://localhost:3001", { transports: ["websocket"] });
+//   s.on("pesan", (m) => console.log("notif:", m));
+//   s.emit("pesan", "ada pesanan baru!");
+
+impor "socketio";
+
+fungsi pesan(soket: bulat, data: teks): kosong {
+    io_siar("pesan", data);          // broadcast ke semua klien
+}
+
+io_pada("pesan", pesan);
+
+fungsi koneksi(soket: bulat): kosong {
+    io_tangani(soket);
+}
+layaniSoket(3001);

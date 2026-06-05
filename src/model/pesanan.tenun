@@ -1,0 +1,23 @@
+// Model Pesanan — skema + akses data.
+
+fungsi modelPesanan(): peta {
+    biar m: peta = orm_model("pesanan");
+    m = orm_kolom(m, "id", "SERIAL PRIMARY KEY");
+    m = orm_kolom(m, "pembeli", "VARCHAR(100)");
+    m = orm_kolom(m, "ringkasan", "TEXT");
+    m = orm_kolom(m, "total", "INT");
+    m = orm_kolom(m, "dibuat_pada", "TIMESTAMP DEFAULT CURRENT_TIMESTAMP");
+    kembali m;
+}
+
+fungsi pesananBuat(pembeli: teks, ringkasan: teks, total: teks): kosong {
+    biar d: bulat = db();
+    orm_simpan(d, modelPesanan(), peta{ "pembeli": pembeli, "ringkasan": ringkasan, "total": total });
+    orm_tutup(d);
+}
+
+fungsi pesananSiapkan(): kosong {
+    biar d: bulat = db();
+    orm_sinkron(d, modelPesanan());
+    orm_tutup(d);
+}

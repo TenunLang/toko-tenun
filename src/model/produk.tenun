@@ -1,0 +1,60 @@
+// Model Produk — definisi skema + akses data (ORM). Controller tidak menyentuh SQL.
+
+fungsi modelProduk(): peta {
+    biar m: peta = orm_model("produk");
+    m = orm_kolom(m, "id", "SERIAL PRIMARY KEY");
+    m = orm_kolom(m, "nama", "VARCHAR(150)");
+    m = orm_kolom(m, "jenis", "VARCHAR(20)");
+    m = orm_kolom(m, "harga", "INT");
+    m = orm_kolom(m, "stok", "INT");
+    m = orm_kolom(m, "deskripsi", "TEXT");
+    kembali m;
+}
+
+// Semua produk sebagai daftar peta.
+fungsi produkSemua(): []peta {
+    biar d: bulat = db();
+    biar hasil: teks = orm_model_semua(d, modelProduk());
+    biar n: bulat = orm_baris(hasil);
+    biar m: peta = modelProduk();
+    biar daftar: []peta = [];
+    untuk i dari 0 sampai n {
+        daftar = dorong(daftar, orm_baris_peta(m, hasil, i));
+    }
+    orm_tutup(d);
+    kembali daftar;
+}
+
+// Satu produk berdasarkan id (peta kosong bila tidak ada).
+fungsi produkCari(id: teks): peta {
+    biar d: bulat = db();
+    biar p: peta = orm_model_cari_satu(d, modelProduk(), "id", id);
+    orm_tutup(d);
+    kembali p;
+}
+
+fungsi produkBuat(data: peta): kosong {
+    biar d: bulat = db();
+    orm_simpan(d, modelProduk(), data);
+    orm_tutup(d);
+}
+
+fungsi produkJumlah(): bulat {
+    biar d: bulat = db();
+    biar n: bulat = orm_model_hitung(d, modelProduk());
+    orm_tutup(d);
+    kembali n;
+}
+
+// Migrasi + data contoh (dipanggil saat start).
+fungsi produkSiapkan(): kosong {
+    biar d: bulat = db();
+    orm_sinkron(d, modelProduk());
+    kalau orm_model_hitung(d, modelProduk()) == 0 {
+        orm_simpan(d, modelProduk(), peta{ "nama": "Tenun Ikat Sumba", "jenis": "tenun", "harga": "850000", "stok": "5", "deskripsi": "Tenun ikat tangan motif kuda Sumba." });
+        orm_simpan(d, modelProduk(), peta{ "nama": "Batik Tulis Solo", "jenis": "batik", "harga": "650000", "stok": "8", "deskripsi": "Batik tulis halus motif parang." });
+        orm_simpan(d, modelProduk(), peta{ "nama": "Tenun Songket Palembang", "jenis": "tenun", "harga": "1200000", "stok": "3", "deskripsi": "Songket benang emas khas Palembang." });
+        orm_simpan(d, modelProduk(), peta{ "nama": "Batik Cap Pekalongan", "jenis": "batik", "harga": "350000", "stok": "12", "deskripsi": "Batik cap warna cerah pesisir." });
+    }
+    orm_tutup(d);
+}

@@ -1,0 +1,22 @@
+// Controller Admin — tambah produk (hanya untuk pengguna login).
+
+fungsi cFormAdmin(): teks {
+    kalau panjangTeks(penggunaKini()) == 0 {
+        kembali web_redirect("/masuk");
+    }
+    kembali render("Admin", tampil("admin.batik", peta{}));
+}
+
+fungsi cProsesAdmin(): teks {
+    kalau panjangTeks(penggunaKini()) == 0 {
+        kembali web_redirect("/masuk");
+    }
+    produkBuat(peta{
+        "nama": web_form("nama"),
+        "jenis": web_form("jenis"),
+        "harga": web_form("harga"),
+        "stok": web_form("stok"),
+        "deskripsi": web_form("deskripsi")
+    });
+    kembali web_redirect("/");
+}

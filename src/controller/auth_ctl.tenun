@@ -1,0 +1,44 @@
+// Controller Auth — daftar, masuk, keluar.
+
+fungsi cFormDaftar(): teks {
+    kembali render("Daftar", tampil("daftar.batik", peta{}));
+}
+
+fungsi cProsesDaftar(): teks {
+    biar nama: teks = web_form("nama");
+    biar email: teks = web_form("email");
+    biar sandi: teks = web_form("sandi");
+    kalau panjangTeks(nama) == 0 || panjangTeks(email) == 0 || panjangTeks(sandi) == 0 {
+        kembali render("Daftar", "<p>Lengkapi semua kolom.</p><a href=\"/daftar\">Kembali</a>");
+    }
+    penggunaBuat(nama, email, auth_hash(sandi));
+    kembali web_redirect("/masuk");
+}
+
+fungsi cFormMasuk(): teks {
+    kembali render("Masuk", tampil("masuk.batik", peta{}));
+}
+
+fungsi cProsesMasuk(): teks {
+    biar email: teks = web_form("email");
+    biar sandi: teks = web_form("sandi");
+    biar u: peta = penggunaCari(email);
+    kalau petaPunya(u, "id") == salah {
+        kembali render("Masuk", "<p>Email tidak terdaftar.</p><a href=\"/masuk\">Coba lagi</a>");
+    }
+    kalau auth_verifikasi(sandi, u["sandi"]) == salah {
+        kembali render("Masuk", "<p>Sandi salah.</p><a href=\"/masuk\">Coba lagi</a>");
+    }
+    biar sid: teks = sesi_buat("{\"id\":\"" + u["id"] + "\",\"nama\":\"" + u["nama"] + "\"}");
+    web_set_cookie_opsi("sesi", sid, "HttpOnly; SameSite=Lax");
+    kembali web_redirect("/");
+}
+
+fungsi cKeluar(): teks {
+    biar sid: teks = sesi_dari_cookie();
+    kalau panjangTeks(sid) > 0 {
+        sesi_hapus(sid);
+    }
+    web_hapus_cookie("sesi");
+    kembali web_redirect("/");
+}

@@ -1,0 +1,74 @@
+// Controller Keranjang — tambah, lihat, checkout. Keranjang disimpan di KV per-sesi.
+
+fungsi keranjangKunci(): teks {
+    kembali "keranjang:" + sesi_dari_cookie();
+}
+
+fungsi cTambahKeranjang(): teks {
+    kalau panjangTeks(sesi_dari_cookie()) == 0 {
+        kembali web_redirect("/masuk");
+    }
+    biar isi: teks = muat(keranjangKunci());
+    kalau panjangTeks(isi) > 0 {
+        isi = isi + ",";
+    }
+    isi = isi + web_param("id");
+    simpan(keranjangKunci(), isi);
+    kembali web_redirect("/keranjang");
+}
+
+fungsi cLihatKeranjang(): teks {
+    kalau panjangTeks(sesi_dari_cookie()) == 0 {
+        kembali web_redirect("/masuk");
+    }
+    biar isi: teks = muat(keranjangKunci());
+    biar baris: teks = "";
+    biar total: bulat = 0;
+    kalau panjangTeks(isi) > 0 {
+        biar ids: []teks = pisah(isi, ",");
+        untuk i dari 0 sampai panjang(ids) {
+            biar p: peta = produkCari(ids[i]);
+            kalau petaPunya(p, "id") {
+                baris = baris + "<tr><td>" + p["nama"] + "</td><td>" + rupiah(p["harga"]) + "</td></tr>";
+                total = total + keBulat(p["harga"]);
+            }
+        }
+    }
+    kembali render("Keranjang", tampil("keranjang.batik", peta{
+        "baris": baris, "total": rupiah(keTeks(total))
+    }));
+}
+
+fungsi cCheckout(): teks {
+    biar sid: teks = sesi_dari_cookie();
+    kalau panjangTeks(sid) == 0 {
+        kembali web_redirect("/masuk");
+    }
+    biar isi: teks = muat(keranjangKunci());
+    kalau panjangTeks(isi) == 0 {
+        kembali render("Keranjang", "<p>Keranjang kosong.</p><a href=\"/\">Belanja</a>");
+    }
+    biar ids: []teks = pisah(isi, ",");
+    biar total: bulat = 0;
+    biar ringkasan: teks = "";
+    untuk i dari 0 sampai panjang(ids) {
+        biar p: peta = produkCari(ids[i]);
+        kalau petaPunya(p, "id") {
+            total = total + keBulat(p["harga"]);
+            kalau panjangTeks(ringkasan) > 0 {
+                ringkasan = ringkasan + ", ";
+            }
+            ringkasan = ringkasan + p["nama"];
+        }
+    }
+    biar pembeli: teks = sesi_field(sid, "nama");
+    pesananBuat(pembeli, ringkasan, keTeks(total));
+
+    // Email konfirmasi (ke Mailpit lokal bila ada).
+    mail_kirim_html("127.0.0.1", 1025, "", "", "toko@tenun.id", "pembeli@contoh.id",
+        "Pesanan diterima",
+        "<h2>Terima kasih, " + pembeli + "!</h2><p>Pesanan: " + ringkasan + "</p><p>Total: " + rupiah(keTeks(total)) + "</p>");
+
+    hapus(keranjangKunci());
+    kembali render("Sukses", "<h2>Pesanan berhasil!</h2><p>" + ringkasan + " — " + rupiah(keTeks(total)) + "</p><p>Konfirmasi dikirim via email.</p><a href=\"/\">Belanja lagi</a>");
+}

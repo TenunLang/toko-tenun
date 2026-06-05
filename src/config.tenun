@@ -1,0 +1,33 @@
+// Konfigurasi + helper bersama (lapisan dasar MVC).
+
+// Koneksi database (dibuat per-permintaan; setiap worker VM punya koneksi sendiri).
+fungsi db(): bulat {
+    kembali orm_sambung("postgres", "127.0.0.1", 5432, "postgres", "", "postgres");
+}
+
+// Format rupiah.
+fungsi rupiah(n: teks): teks {
+    kembali "Rp " + n;
+}
+
+// Nama pengguna yang sedang login ("" bila tamu).
+fungsi penggunaKini(): teks {
+    biar sid: teks = sesi_dari_cookie();
+    kalau panjangTeks(sid) == 0 {
+        kembali "";
+    }
+    kembali sesi_field(sid, "nama");
+}
+
+// Render layout (view/tata.batik) dengan konten halaman.
+fungsi render(judul: teks, konten: teks): teks {
+    biar tata: teks = bacaFile("view/tata.batik");
+    kembali web_html(tampilan_render(tata, peta{
+        "judul": judul, "konten": konten, "pengguna": penggunaKini()
+    }));
+}
+
+// Render sebuah view file menjadi HTML (tanpa layout).
+fungsi tampil(berkas: teks, data: peta): teks {
+    kembali tampilan_render(bacaFile("view/" + berkas), data);
+}

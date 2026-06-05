@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{judul}} — Toko Tenun & Batik</title>
+<link rel="stylesheet" href="/gaya.css">
+</head>
+<body>
+<header class="nav">
+  <a class="merek" href="/">Toko Tenun &amp; Batik</a>
+  <nav>
+    <a href="/">Beranda</a>
+    <a href="/keranjang">Keranjang</a>
+    {{#jika pengguna}}<a href="/admin">Admin</a> <span class="halo">Halo, {{pengguna}}</span> <a href="/keluar">Keluar</a>{{/jika pengguna}}
+    {{#kecuali pengguna}}<a href="/masuk">Masuk</a> <a href="/daftar">Daftar</a>{{/kecuali pengguna}}
+  </nav>
+</header>
+<main>{{konten}}</main>
+<footer>Toko Tenun &amp; Batik — contoh e-commerce dibangun 100% dengan bahasa Tenun (web · orm · tampilan · auth · sesi · mail).</footer>
+</body>
+</html>

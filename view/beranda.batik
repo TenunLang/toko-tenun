@@ -1,0 +1,8 @@
+<section class="hero">
+  <h1>Warisan Kain Nusantara</h1>
+  <p class="sub">Tenun ikat &amp; batik tulis pilihan, langsung dari pengrajin.</p>
+</section>
+<h2>Koleksi</h2>
+<div class="grid">
+{{produk}}
+</div>

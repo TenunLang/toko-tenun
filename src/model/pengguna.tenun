@@ -1,0 +1,29 @@
+// Model Pengguna — skema + akses data.
+
+fungsi modelPengguna(): peta {
+    biar m: peta = orm_model("pengguna");
+    m = orm_kolom(m, "id", "SERIAL PRIMARY KEY");
+    m = orm_kolom(m, "nama", "VARCHAR(100)");
+    m = orm_kolom(m, "email", "VARCHAR(150)");
+    m = orm_kolom(m, "sandi", "TEXT");
+    kembali m;
+}
+
+fungsi penggunaCari(email: teks): peta {
+    biar d: bulat = db();
+    biar u: peta = orm_model_cari_satu(d, modelPengguna(), "email", email);
+    orm_tutup(d);
+    kembali u;
+}
+
+fungsi penggunaBuat(nama: teks, email: teks, sandiHash: teks): kosong {
+    biar d: bulat = db();
+    orm_simpan(d, modelPengguna(), peta{ "nama": nama, "email": email, "sandi": sandiHash });
+    orm_tutup(d);
+}
+
+fungsi penggunaSiapkan(): kosong {
+    biar d: bulat = db();
+    orm_sinkron(d, modelPengguna());
+    orm_tutup(d);
+}

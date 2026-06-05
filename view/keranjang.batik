@@ -1,0 +1,11 @@
+<h1>Keranjang</h1>
+<table class="tabel">
+  <thead><tr><th>Produk</th><th>Harga</th></tr></thead>
+  <tbody>
+    {{baris}}
+  </tbody>
+  <tfoot><tr><th>Total</th><th>{{total}}</th></tr></tfoot>
+</table>
+<form method="post" action="/checkout">
+  <button class="tombol besar" type="submit">Checkout</button>
+</form>
