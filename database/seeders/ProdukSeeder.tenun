@@ -1,0 +1,27 @@
+// Seeder produk contoh (gambar bertema batik/tenun).
+fungsi _sp(nama: teks, kat: teks, harga: teks, stok: teks, gambar: teks, desk: teks): kosong {
+    biar r: peta = peta{};
+    r["nama"] = nama;
+    r["kategori"] = kat;
+    r["harga"] = harga;
+    r["stok"] = stok;
+    r["gambar"] = gambar;
+    r["deskripsi"] = desk;
+    orm_simpan(DB, model_produk(), r);
+}
+
+fungsi seed_produk(): kosong {
+    kalau orm_model_hitung(DB, model_produk()) > 0 {
+        cetak("  [seed] produk sudah ada, lewati");
+        kembali;
+    }
+    _sp("Kain Batik Tulis Parang", "Batik", "285000", "12", "https://loremflickr.com/600/400/batik/all?lock=1", "Batik tulis motif Parang klasik, pewarna alami, katun primisima.");
+    _sp("Batik Cap Mega Mendung", "Batik", "175000", "20", "https://loremflickr.com/600/400/batik,cloud/all?lock=2", "Motif Mega Mendung khas Cirebon, gradasi biru.");
+    _sp("Tenun Ikat Sumba", "Tenun", "450000", "8", "https://loremflickr.com/600/400/woven,textile/all?lock=3", "Tenun ikat tangan asli Sumba, pewarna alam, eksklusif.");
+    _sp("Tenun Songket Palembang", "Tenun", "620000", "5", "https://loremflickr.com/600/400/songket,gold/all?lock=4", "Songket benang emas, motif pucuk rebung mewah.");
+    _sp("Kemeja Batik Pria Slimfit", "Pakaian", "220000", "30", "https://loremflickr.com/600/400/batik,shirt/all?lock=5", "Kemeja batik modern slimfit, adem, cocok kerja & acara.");
+    _sp("Dress Batik Wanita", "Pakaian", "265000", "18", "https://loremflickr.com/600/400/batik,dress/all?lock=6", "Dress batik kontemporer, potongan A-line, elegan.");
+    _sp("Selendang Tenun Lombok", "Tenun", "135000", "25", "https://loremflickr.com/600/400/scarf,weave/all?lock=7", "Selendang tenun Lombok, lembut, motif geometris.");
+    _sp("Batik Sutra Premium", "Batik", "780000", "4", "https://loremflickr.com/600/400/silk,batik/all?lock=8", "Batik di atas sutra murni, halus dan berkilau.");
+    cetak("  [seed] 8 produk dimasukkan");
+}

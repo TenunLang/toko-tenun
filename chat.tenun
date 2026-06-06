@@ -1,19 +1,13 @@
 // Server Live Chat — WebSocket mentah, broadcast semua pesan ke semua klien.
-// Jalankan TERPISAH dari web: tenun chat.tenun  (port 3000)
-//
-// Skala: untuk banyak instance, ganti ws_siar dengan publish ke Redis channel
-// lalu tiap instance subscribe & broadcast lokal (fan-out). Lihat README.
+// Jalankan terpisah: tenun chat.tenun  (port 3000)
+// Skala multi-instance: ganti ws_siar -> publish Redis channel, tiap instance subscribe.
 impor "websocket";
 
 fungsi koneksi(soket: bulat): kosong {
-    kalau ws_terima_handshake(soket) == salah {
-        kembali;
-    }
+    kalau ws_terima_handshake(soket) == salah { kembali; }
     selama benar {
         biar m: teks = ws_baca(soket);
-        kalau panjangTeks(m) == 0 {
-            kembali;
-        }
+        kalau panjangTeks(m) == 0 { kembali; }
         ws_siar(m);
     }
 }

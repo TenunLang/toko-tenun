@@ -1,0 +1,5 @@
+// Migrasi: tabel pengguna.
+fungsi migrasi_pengguna(): kosong {
+    orm_migrasi(DB, model_pengguna());
+    cetak("  [migrasi] tabel pengguna");
+}

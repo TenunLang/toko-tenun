@@ -6,8 +6,6 @@ a { color: var(--coklat); }
 .produk-card:hover { transform: translateY(-4px); box-shadow: 0 .6rem 1.2rem rgba(0,0,0,.12) !important; }
 .produk-card .card-img-top { height: 200px; object-fit: cover; }
 .breadcrumb { background: transparent; padding-left: 0; }
-
-/* Live chat widget */
 #chat-widget { position: fixed; right: 20px; bottom: 20px; z-index: 1050; }
 #chat-toggle { width: 56px; height: 56px; }
 #chat-box { position: absolute; right: 0; bottom: 70px; width: 320px; max-width: 90vw; }

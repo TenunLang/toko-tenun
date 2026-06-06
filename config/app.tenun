@@ -1,0 +1,7 @@
+// Konfigurasi aplikasi.
+jala_atur("nama_app", "Tenun & Batik Nusantara");
+jala_atur("ws_url", "ws://localhost:3000");
+jala_atur("admin_email", "admin@toko.id");
+
+// View ada di resources/views (gaya Laravel).
+jala_atur_tampilan("resources/views");

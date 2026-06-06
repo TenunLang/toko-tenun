@@ -1,0 +1,13 @@
+// Penjalan seeder. Jalankan: tenun database/Seeder.tenun  (setelah migrasi)
+impor "auth";
+impor "../config/database.tenun";
+impor "../app/Models/Produk.tenun";
+impor "../app/Models/Pengguna.tenun";
+impor "./seeders/ProdukSeeder.tenun";
+impor "./seeders/PenggunaSeeder.tenun";
+
+db_init();
+cetak("[seed] mulai...");
+seed_produk();
+seed_pengguna();
+cetak("[seed] selesai.");

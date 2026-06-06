@@ -1,0 +1,60 @@
+// Controller Checkout.
+
+fungsi checkout_form(): teks {
+    biar sid: teks = sid_kini();
+    kalau cart_jumlah(sid) == 0 { kembali jala_redirect("/keranjang"); }
+    biar data: peta = peta{};
+    data["total"] = rupiah(cart_total(sid));
+    data["email"] = user_kini();
+    data["nama_user"] = user_nama(user_kini());
+    data["galat"] = jala_galat_pesan("nama") + jala_galat_pesan("alamat");
+    kembali sajikan("checkout/index", "Checkout", data);
+}
+
+fungsi checkout_proses(): teks {
+    biar sid: teks = sid_kini();
+    kalau cart_jumlah(sid) == 0 { kembali jala_redirect("/keranjang"); }
+    kalau jala_perlu("nama") == salah { kembali checkout_form(); }
+    kalau jala_perlu("alamat") == salah { kembali checkout_form(); }
+
+    biar baris: []teks = cart_isi(sid);
+    biar items: teks = "";
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        kalau i > 0 { items = items + ";"; }
+        items = items + f[0] + "#" + f[1];
+    }
+
+    biar kode: teks = "INV" + keTeks(waktu());
+    biar email: teks = user_kini();
+    kalau panjangTeks(email) == 0 { email = jala_input("email"); }
+
+    biar baris_pesanan: peta = peta{};
+    baris_pesanan["kode"] = kode;
+    baris_pesanan["email"] = email;
+    baris_pesanan["nama"] = jala_input("nama");
+    baris_pesanan["alamat"] = jala_input("alamat");
+    baris_pesanan["total"] = keTeks(cart_total(sid));
+    baris_pesanan["items"] = items;
+    baris_pesanan["status"] = "baru";
+    baris_pesanan["dibuat"] = keTeks(waktu());
+    orm_simpan(DB, model_pesanan(), baris_pesanan);
+
+    cart_kosong(sid);
+    kembali jala_redirect("/pesanan/" + kode);
+}
+
+fungsi pesanan_konfirmasi(): teks {
+    biar kode: teks = jala_param("kode");
+    biar o: peta = orm_model_cari_satu(DB, model_pesanan(), "kode", kode);
+    kalau petaPunya(o, "kode") == salah {
+        jala_status(404);
+        kembali sajikan("home/notfound", "Tidak Ditemukan", peta{});
+    }
+    biar data: peta = peta{};
+    data["kode"] = o["kode"];
+    data["nama"] = o["nama"];
+    data["alamat"] = o["alamat"];
+    data["total"] = rupiah(keBulat(o["total"]));
+    kembali sajikan("checkout/sukses", "Pesanan Berhasil", data);
+}

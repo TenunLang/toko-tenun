@@ -1,0 +1,5 @@
+// Migrasi: tabel pesanan.
+fungsi migrasi_pesanan(): kosong {
+    orm_migrasi(DB, model_pesanan());
+    cetak("  [migrasi] tabel pesanan");
+}

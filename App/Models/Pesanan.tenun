@@ -1,42 +1,14 @@
-// Model Pesanan — kunci "pesanan:db". Baris: kode|email|nama|alamat|total|items|status|waktu
-// items: "produkid#qty;produkid#qty"
-
-fungsi pesanan_kode(): teks {
-    kembali "INV" + keTeks(waktu());
-}
-
-fungsi pesanan_buat(kode: teks, email: teks, nama: teks, alamat: teks, total: teks, items: teks): kosong {
-    biar rec: teks = kode + "|" + email + "|" + nama + "|" + alamat + "|" + total + "|" + items + "|baru|" + keTeks(waktu());
-    biar d: teks = muat("pesanan:db");
-    kalau panjangTeks(d) == 0 { simpan("pesanan:db", rec); }
-    lain { simpan("pesanan:db", d + "\n" + rec); }
-}
-
-fungsi pesanan_semua(): []teks {
-    biar d: teks = muat("pesanan:db");
-    kalau panjangTeks(d) == 0 { kembali []; }
-    kembali pisah(d, "\n");
-}
-
-fungsi pesanan_cari(kode: teks): teks {
-    biar baris: []teks = pesanan_semua();
-    untuk i dari 0 sampai panjang(baris) {
-        biar f: []teks = pisah(baris[i], "|");
-        kalau f[0] == kode { kembali baris[i]; }
-    }
-    kembali "";
-}
-
-fungsi pesanan_peta(baris: teks): peta {
-    biar f: []teks = pisah(baris, "|");
-    biar p: peta = peta{};
-    p["kode"] = f[0];
-    p["email"] = f[1];
-    p["nama"] = f[2];
-    p["alamat"] = f[3];
-    p["total"] = f[4];
-    p["items"] = f[5];
-    p["status"] = f[6];
-    p["waktu"] = f[7];
-    kembali p;
+// Model Pesanan — skema saja. items: "produkid#qty;produkid#qty".
+fungsi model_pesanan(): peta {
+    biar m: peta = orm_model("pesanan");
+    m = orm_kolom(m, "id", orm_tipe_id());
+    m = orm_kolom(m, "kode", "VARCHAR(40)");
+    m = orm_kolom(m, "email", "VARCHAR(150)");
+    m = orm_kolom(m, "nama", "VARCHAR(150)");
+    m = orm_kolom(m, "alamat", "TEXT");
+    m = orm_kolom(m, "total", "BIGINT");
+    m = orm_kolom(m, "items", "TEXT");
+    m = orm_kolom(m, "status", "VARCHAR(20)");
+    m = orm_kolom(m, "dibuat", "BIGINT");
+    kembali m;
 }

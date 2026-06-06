@@ -1,0 +1,43 @@
+// Controller Keranjang.
+
+fungsi keranjang_tambah_aksi(): teks {
+    cart_tambah(sid_kini(), jala_param("id"));
+    kembali jala_redirect("/keranjang");
+}
+
+fungsi keranjang_hapus_aksi(): teks {
+    cart_hapus(sid_kini(), jala_param("id"));
+    kembali jala_redirect("/keranjang");
+}
+
+fungsi keranjang_lihat(): teks {
+    biar sid: teks = sid_kini();
+    biar baris: []teks = cart_isi(sid);
+    biar rows: teks = "";
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        biar p: peta = produk_oleh_id(f[0]);
+        kalau petaPunya(p, "id") {
+            biar qty: bulat = keBulat(f[1]);
+            biar sub: bulat = keBulat(p["harga"]) * qty;
+            rows = rows + "<tr>" +
+                "<td><img src=\"" + p["gambar"] + "\" width=\"54\" class=\"rounded me-2\">" + p["nama"] + "</td>" +
+                "<td>" + rupiah(keBulat(p["harga"])) + "</td>" +
+                "<td>" + keTeks(qty) + "</td>" +
+                "<td>" + rupiah(sub) + "</td>" +
+                "<td><a href=\"/keranjang/hapus/" + p["id"] + "\" class=\"btn btn-sm btn-outline-danger\">Hapus</a></td>" +
+                "</tr>";
+        }
+    }
+    biar data: peta = peta{};
+    kalau panjangTeks(rows) == 0 {
+        data["kosong"] = "1";
+        data["rows"] = "";
+        data["total"] = rupiah(0);
+    } lain {
+        data["kosong"] = "";
+        data["rows"] = rows;
+        data["total"] = rupiah(cart_total(sid));
+    }
+    kembali sajikan("keranjang/index", "Keranjang", data);
+}

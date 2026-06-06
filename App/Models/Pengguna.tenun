@@ -1,40 +1,10 @@
-// Model Pengguna — kunci "user:<email>" = hash$...|nama|peran.
-// Sandi di-hash PBKDF2 (modul auth). peran: "admin" | "pelanggan".
-
-fungsi pengguna_seed(): kosong {
-    biar adm: teks = jala_konfig("admin_email");
-    kalau panjangTeks(muat("user:" + adm)) == 0 {
-        simpan("user:" + adm, auth_hash("admin123") + "\t" + "Administrator" + "\t" + "admin");
-    }
-}
-
-fungsi pengguna_cari(email: teks): teks {
-    kembali muat("user:" + email);
-}
-
-fungsi pengguna_ada(email: teks): bool {
-    kembali panjangTeks(muat("user:" + email)) > 0;
-}
-
-fungsi pengguna_daftar(email: teks, nama: teks, sandi: teks): kosong {
-    simpan("user:" + email, auth_hash(sandi) + "\t" + nama + "\t" + "pelanggan");
-}
-
-fungsi pengguna_cek(email: teks, sandi: teks): bool {
-    biar rec: teks = muat("user:" + email);
-    kalau panjangTeks(rec) == 0 { kembali salah; }
-    biar f: []teks = pisah(rec, "\t");
-    kembali auth_verifikasi(sandi, f[0]);
-}
-
-fungsi pengguna_nama(email: teks): teks {
-    biar rec: teks = muat("user:" + email);
-    kalau panjangTeks(rec) == 0 { kembali ""; }
-    kembali pisah(rec, "\t")[1];
-}
-
-fungsi pengguna_peran(email: teks): teks {
-    biar rec: teks = muat("user:" + email);
-    kalau panjangTeks(rec) == 0 { kembali ""; }
-    kembali pisah(rec, "\t")[2];
+// Model Pengguna — skema saja. peran: "admin" | "pelanggan".
+fungsi model_pengguna(): peta {
+    biar m: peta = orm_model("pengguna");
+    m = orm_kolom(m, "id", orm_tipe_id());
+    m = orm_kolom(m, "email", "VARCHAR(150)");
+    m = orm_kolom(m, "nama", "VARCHAR(150)");
+    m = orm_kolom(m, "sandi", "TEXT");
+    m = orm_kolom(m, "peran", "VARCHAR(20)");
+    kembali m;
 }

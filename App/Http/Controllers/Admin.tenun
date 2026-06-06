@@ -1,0 +1,83 @@
+// Controller Admin — dijaga is_admin().
+
+fungsi admin_dashboard(): teks {
+    kalau is_admin() == salah { kembali jala_redirect("/masuk"); }
+    biar omzet: teks = qb_agregat(DB, qb("pesanan"), "SUM", "total");
+    kalau panjangTeks(omzet) == 0 { omzet = "0"; }
+    biar data: peta = peta{};
+    data["jum_produk"] = keTeks(orm_model_hitung(DB, model_produk()));
+    data["jum_pesanan"] = keTeks(orm_model_hitung(DB, model_pesanan()));
+    data["omzet"] = rupiah(keBulat(omzet));
+    kembali sajikan("admin/dashboard", "Dashboard Admin", data);
+}
+
+fungsi admin_produk(): teks {
+    kalau is_admin() == salah { kembali jala_redirect("/masuk"); }
+    kembali sajikan("admin/produk", "Kelola Produk", peta{});
+}
+
+fungsi admin_produk_simpan(): teks {
+    kalau is_admin() == salah { kembali jala_redirect("/masuk"); }
+    biar baru: peta = peta{};
+    baru["nama"] = jala_input("nama");
+    baru["kategori"] = jala_input("kategori");
+    baru["harga"] = jala_input("harga");
+    baru["stok"] = jala_input("stok");
+    baru["gambar"] = jala_input("gambar");
+    baru["deskripsi"] = jala_input("deskripsi");
+    orm_simpan(DB, model_produk(), baru);
+    kembali jala_redirect("/admin/produk");
+}
+
+fungsi admin_produk_hapus(): teks {
+    kalau is_admin() == salah { kembali jala_redirect("/masuk"); }
+    orm_model_hapus(DB, model_produk(), "id", jala_param("id"));
+    kembali jala_redirect("/admin/produk");
+}
+
+fungsi admin_pesanan(): teks {
+    kalau is_admin() == salah { kembali jala_redirect("/masuk"); }
+    kembali sajikan("admin/pesanan", "Kelola Pesanan", peta{});
+}
+
+fungsi admin_chat(): teks {
+    kalau is_admin() == salah { kembali jala_redirect("/masuk"); }
+    kembali sajikan("admin/chat", "Live Chat", peta{});
+}
+
+// ---- API JSON (DataTables) ----
+
+fungsi _js(s: teks): teks {
+    biar r: teks = ganti(s, "\\", "\\\\");
+    r = ganti(r, "\"", "\\\"");
+    kembali r;
+}
+
+fungsi api_produk(): teks {
+    kalau is_admin() == salah { jala_status(403); kembali jala_json("{\"data\":[]}"); }
+    biar hasil: teks = orm_model_semua(DB, model_produk());
+    biar n: bulat = orm_baris(hasil);
+    biar arr: teks = "";
+    untuk i dari 0 sampai n {
+        biar p: peta = orm_baris_peta(model_produk(), hasil, i);
+        kalau i > 0 { arr = arr + ","; }
+        arr = arr + "[\"" + p["id"] + "\",\"" + _js(p["nama"]) + "\",\"" + p["kategori"] +
+            "\",\"" + rupiah(keBulat(p["harga"])) + "\",\"" + p["stok"] +
+            "\",\"<a href='/admin/produk/hapus/" + p["id"] + "' class='btn btn-sm btn-outline-danger'>Hapus</a>\"]";
+    }
+    kembali jala_json("{\"data\":[" + arr + "]}");
+}
+
+fungsi api_pesanan(): teks {
+    kalau is_admin() == salah { jala_status(403); kembali jala_json("{\"data\":[]}"); }
+    biar hasil: teks = orm_model_semua(DB, model_pesanan());
+    biar n: bulat = orm_baris(hasil);
+    biar arr: teks = "";
+    untuk i dari 0 sampai n {
+        biar o: peta = orm_baris_peta(model_pesanan(), hasil, i);
+        kalau i > 0 { arr = arr + ","; }
+        arr = arr + "[\"" + o["kode"] + "\",\"" + _js(o["nama"]) + "\",\"" + _js(o["email"]) +
+            "\",\"" + rupiah(keBulat(o["total"])) + "\",\"" + o["status"] + "\"]";
+    }
+    kembali jala_json("{\"data\":[" + arr + "]}");
+}

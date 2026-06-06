@@ -1,0 +1,55 @@
+// Controller Home — katalog (filter kategori + pencarian).
+
+fungsi _kartu(p: peta): teks {
+    kembali "<div class=\"col-6 col-md-3 mb-4\">" +
+        "<div class=\"card h-100 shadow-sm border-0 produk-card\">" +
+        "<a href=\"/produk/" + p["id"] + "\"><img src=\"" + p["gambar"] + "\" class=\"card-img-top\" alt=\"" + p["nama"] + "\" loading=\"lazy\"></a>" +
+        "<div class=\"card-body d-flex flex-column\">" +
+        "<span class=\"badge bg-light text-dark align-self-start mb-1\">" + p["kategori"] + "</span>" +
+        "<h6 class=\"card-title\"><a href=\"/produk/" + p["id"] + "\" class=\"text-decoration-none text-dark\">" + p["nama"] + "</a></h6>" +
+        "<div class=\"mt-auto\">" +
+        "<div class=\"fw-bold text-success mb-2\">" + rupiah(keBulat(p["harga"])) + "</div>" +
+        "<form method=\"post\" action=\"/keranjang/tambah/" + p["id"] + "\">" +
+        "<button class=\"btn btn-sm btn-warning w-100\"><i class=\"bi bi-cart-plus\"></i> Keranjang</button>" +
+        "</form></div></div></div></div>";
+}
+
+fungsi home_index(): teks {
+    biar kat: teks = web_kueri("kategori");
+    biar kunci: teks = web_kueri("cari");
+    biar hasil: teks = orm_model_semua(DB, model_produk());
+    biar n: bulat = orm_baris(hasil);
+    biar html: teks = "";
+    untuk i dari 0 sampai n {
+        biar p: peta = orm_baris_peta(model_produk(), hasil, i);
+        biar tampil: bool = benar;
+        kalau panjangTeks(kat) > 0 { kalau p["kategori"] != kat { tampil = salah; } }
+        kalau panjangTeks(kunci) > 0 { kalau cari(p["nama"], kunci) < 0 { tampil = salah; } }
+        kalau tampil { html = html + _kartu(p); }
+    }
+    kalau panjangTeks(html) == 0 {
+        html = "<div class=\"col-12 text-center text-muted py-5\">Produk tidak ditemukan.</div>";
+    }
+    biar data: peta = peta{};
+    data["produk_html"] = html;
+    data["kategori"] = kat;
+    kembali sajikan("home/index", "Beranda", data);
+}
+
+fungsi produk_detail(): teks {
+    biar id: teks = jala_param("id");
+    biar p: peta = orm_model_cari_satu(DB, model_produk(), "id", id);
+    kalau petaPunya(p, "id") == salah {
+        jala_status(404);
+        kembali sajikan("home/notfound", "Tidak Ditemukan", peta{});
+    }
+    biar data: peta = peta{};
+    data["id"] = p["id"];
+    data["nama"] = p["nama"];
+    data["kategori"] = p["kategori"];
+    data["harga"] = rupiah(keBulat(p["harga"]));
+    data["stok"] = p["stok"];
+    data["gambar"] = p["gambar"];
+    data["deskripsi"] = p["deskripsi"];
+    kembali sajikan("home/detail", p["nama"], data);
+}

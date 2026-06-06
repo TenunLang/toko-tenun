@@ -1,0 +1,15 @@
+// Penjalan migrasi. Jalankan: tenun database/Migrasi.tenun
+impor "../config/database.tenun";
+impor "../app/Models/Produk.tenun";
+impor "../app/Models/Pengguna.tenun";
+impor "../app/Models/Pesanan.tenun";
+impor "./migrations/01_produk.tenun";
+impor "./migrations/02_pengguna.tenun";
+impor "./migrations/03_pesanan.tenun";
+
+db_init();
+cetak("[migrasi] mulai...");
+migrasi_produk();
+migrasi_pengguna();
+migrasi_pesanan();
+cetak("[migrasi] selesai.");

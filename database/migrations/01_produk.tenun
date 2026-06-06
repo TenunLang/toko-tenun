@@ -1,0 +1,5 @@
+// Migrasi: tabel produk.
+fungsi migrasi_produk(): kosong {
+    orm_migrasi(DB, model_produk());
+    cetak("  [migrasi] tabel produk");
+}

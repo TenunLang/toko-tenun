@@ -1,0 +1,25 @@
+// Koneksi PostgreSQL (ORM) + Redis. Handle global dipakai seluruh app.
+// Kredensial dari env (fallback default lokal).
+impor "orm";
+impor "redis";
+
+biar DB: bulat = 0 - 1;
+biar RDS: bulat = 0 - 1;
+
+fungsi env_atau(nama: teks, fallback: teks): teks {
+    biar v: teks = lingkungan(nama);
+    kalau panjangTeks(v) == 0 { kembali fallback; }
+    kembali v;
+}
+
+fungsi db_init(): kosong {
+    DB = orm_sambung("postgres",
+        env_atau("PGHOST", "127.0.0.1"),
+        keBulat(env_atau("PGPORT", "5432")),
+        env_atau("PGUSER", "postgres"),
+        env_atau("PGPASSWORD", "postgres"),
+        env_atau("PGDATABASE", "toko_tenun"));
+    RDS = redis_sambung(
+        env_atau("REDIS_HOST", "127.0.0.1"),
+        keBulat(env_atau("REDIS_PORT", "6379")));
+}

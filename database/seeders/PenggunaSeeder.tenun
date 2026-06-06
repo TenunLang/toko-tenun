@@ -1,0 +1,16 @@
+// Seeder akun admin default.
+fungsi seed_pengguna(): kosong {
+    biar email: teks = "admin@toko.id";
+    biar ada: peta = orm_model_cari_satu(DB, model_pengguna(), "email", email);
+    kalau petaPunya(ada, "email") {
+        cetak("  [seed] admin sudah ada, lewati");
+        kembali;
+    }
+    biar r: peta = peta{};
+    r["email"] = email;
+    r["nama"] = "Administrator";
+    r["sandi"] = auth_hash("admin123");
+    r["peran"] = "admin";
+    orm_simpan(DB, model_pengguna(), r);
+    cetak("  [seed] admin dibuat: admin@toko.id / admin123");
+}

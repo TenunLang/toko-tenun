@@ -1,0 +1,37 @@
+// Rute aplikasi. Pola -> fungsi controller. Memakai grup berprefiks.
+
+// Publik
+jala_get("/", home_index);
+jala_get("/produk/:id", produk_detail);
+
+jala_get("/keranjang", keranjang_lihat);
+jala_post("/keranjang/tambah/:id", keranjang_tambah_aksi);
+jala_get("/keranjang/hapus/:id", keranjang_hapus_aksi);
+
+jala_get("/checkout", checkout_form);
+jala_post("/checkout", checkout_proses);
+jala_get("/pesanan/:kode", pesanan_konfirmasi);
+
+jala_get("/masuk", masuk_form);
+jala_post("/masuk", masuk_proses);
+jala_get("/daftar", daftar_form);
+jala_post("/daftar", daftar_proses);
+jala_get("/keluar", keluar_aksi);
+
+// Grup admin (prefix /admin)
+fungsi rute_admin(): kosong {
+    jala_get("", admin_dashboard);
+    jala_get("/produk", admin_produk);
+    jala_post("/produk", admin_produk_simpan);
+    jala_get("/produk/hapus/:id", admin_produk_hapus);
+    jala_get("/pesanan", admin_pesanan);
+    jala_get("/chat", admin_chat);
+}
+jala_grup("/admin", rute_admin);
+
+// Grup API (prefix /api)
+fungsi rute_api(): kosong {
+    jala_get("/produk", api_produk);
+    jala_get("/pesanan", api_pesanan);
+}
+jala_grup("/api", rute_api);

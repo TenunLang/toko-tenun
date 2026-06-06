@@ -1,0 +1,77 @@
+// Pembantu: sesi (cookie sid + Redis), pengguna aktif, format rupiah, render.
+
+fungsi sid_kini(): teks {
+    biar s: teks = web_cookie("sid");
+    kalau panjangTeks(s) == 0 {
+        s = auth_token_acak(16);
+        web_set_cookie("sid", s);
+    }
+    kembali s;
+}
+
+fungsi masuk_set(email: teks): kosong {
+    redis_setex(RDS, "sesi:" + sid_kini(), 86400, email);
+}
+
+fungsi keluar_set(): kosong {
+    redis_del(RDS, "sesi:" + sid_kini());
+}
+
+fungsi user_kini(): teks {
+    kembali redis_get(RDS, "sesi:" + sid_kini());
+}
+
+fungsi sudah_masuk(): bool {
+    kembali panjangTeks(user_kini()) > 0;
+}
+
+// Cari pengguna (peta) berdasar email; peta kosong bila tak ada.
+fungsi user_cari(email: teks): peta {
+    kembali orm_model_cari_satu(DB, model_pengguna(), "email", email);
+}
+
+fungsi user_nama(email: teks): teks {
+    biar p: peta = user_cari(email);
+    kalau petaPunya(p, "nama") { kembali p["nama"]; }
+    kembali "";
+}
+
+fungsi is_admin(): bool {
+    biar email: teks = user_kini();
+    kalau panjangTeks(email) == 0 { kembali salah; }
+    biar p: peta = user_cari(email);
+    kalau petaPunya(p, "peran") { kembali p["peran"] == "admin"; }
+    kembali salah;
+}
+
+fungsi rupiah(n: bulat): teks {
+    biar s: teks = keTeks(n);
+    biar keluar: teks = "";
+    biar c: bulat = 0;
+    biar i: bulat = panjangTeks(s) - 1;
+    selama i >= 0 {
+        keluar = potong(s, i, 1) + keluar;
+        c = c + 1;
+        kalau (c % 3) == 0 { kalau i > 0 { keluar = "." + keluar; } }
+        i = i - 1;
+    }
+    kembali "Rp " + keluar;
+}
+
+// Render view + tata letak dengan variabel umum.
+fungsi sajikan(view: teks, judul: teks, data: peta): teks {
+    data["judul"] = judul;
+    data["nama_app"] = jala_konfig("nama_app");
+    data["ws_url"] = jala_konfig("ws_url");
+    data["keranjang_jumlah"] = keTeks(cart_jumlah(sid_kini()));
+    biar email: teks = user_kini();
+    kalau panjangTeks(email) > 0 {
+        data["user_nama"] = user_nama(email);
+        data["masuk"] = "1";
+    } lain {
+        data["user_nama"] = "";
+        data["masuk"] = "";
+    }
+    kalau is_admin() { data["admin"] = "1"; } lain { data["admin"] = ""; }
+    kembali jala_tampil_tata("layout", view, data);
+}

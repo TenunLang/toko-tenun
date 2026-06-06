@@ -1,84 +1,78 @@
 # Toko Tenun & Batik
 
-E-commerce **wastra Nusantara** (batik, tenun, songket) — dibangun dengan bahasa **Tenun** di atas kerangka **Jala** (MVC). Tampilan Bootstrap 5 + jQuery + DataTables, responsif, profesional. Dilengkapi **live chat WebSocket** (pelanggan ↔ admin) dan panel admin.
-
-![stack](https://img.shields.io/badge/Tenun-Jala_MVC-5c3a21) ![ui](https://img.shields.io/badge/UI-Bootstrap_5-7952b3)
+E-commerce **wastra Nusantara** (batik, tenun, songket) — bahasa **Tenun**, kerangka **Jala** (MVC), struktur **ala Laravel**. PostgreSQL (via ORM) + Redis (sesi/keranjang) + live chat WebSocket. UI Bootstrap 5 + jQuery + DataTables, responsif.
 
 ## Fitur
+- Etalase: katalog, filter kategori, pencarian, detail produk.
+- Keranjang (Redis) + checkout + halaman sukses.
+- Akun: daftar/masuk/keluar (sandi PBKDF2; sesi di Redis).
+- Admin: dashboard (omzet/jumlah), kelola produk (DataTables + tambah/hapus), pesanan (DataTables), live chat.
+- Live chat WebSocket (widget pelanggan + panel admin).
 
-- **Etalase**: katalog produk, filter kategori, pencarian, halaman detail.
-- **Keranjang & Checkout**: keranjang per-sesi, ringkasan, pembuatan pesanan, halaman sukses.
-- **Akun**: daftar, masuk, keluar (sandi di-hash PBKDF2 via modul `auth`).
-- **Admin**: dashboard (omzet/jumlah), kelola produk (DataTables + tambah/hapus), daftar pesanan (DataTables), live chat.
-- **Live chat**: widget mengambang untuk pelanggan + panel admin, real-time via WebSocket.
-- **Responsif**: mobile-first, Bootstrap 5, Bootstrap Icons.
+## Prasyarat
+- PostgreSQL + Redis berjalan (default `127.0.0.1:5432` / `:6379`).
+- Buat database: `createdb toko_tenun` (atau `CREATE DATABASE toko_tenun;`).
+- Kredensial via env (default lokal): `PGHOST PGPORT PGUSER PGPASSWORD PGDATABASE REDIS_HOST REDIS_PORT`.
 
 ## Menjalankan
-
-Butuh binari `tenun` terpasang.
-
 ```
-tenun add jala          # pasang kerangka + dependensi (web, tampilan, auth)
-tenun add websocket     # untuk live chat
-tenun                   # jalankan toko  -> http://localhost:8080
+tenun add jala          # web, tampilan, auth
+tenun add orm           # postgres, mysql
+tenun add redis
+tenun add websocket
+
+tenun database/Migrasi.tenun    # buat tabel
+tenun database/Seeder.tenun     # isi produk + admin
+
+# Windows: set TENUN_WORKERS=1 & tenun
+TENUN_WORKERS=1 tenun            # http://localhost:8080
+tenun chat.tenun                 # live chat ws://localhost:3000 (proses terpisah)
 ```
+Admin: **admin@toko.id** / **admin123**.
 
-Live chat (proses terpisah):
+> **TENUN_WORKERS=1**: tiap proses memakai 1 worker karena memegang koneksi soket (DB/Redis) sendiri. Skalakan dengan menjalankan **banyak proses** di belakang load balancer (lihat di bawah), bukan banyak thread satu proses.
 
+## Struktur (Laravel-style)
 ```
-tenun chat.tenun        # server WebSocket -> ws://localhost:3000
+index.tenun                     bootstrap (entry; `tenun` menjalankan ini)
+chat.tenun                      server live chat WebSocket
+config/
+  app.tenun                     nama app, ws_url, folder view
+  database.tenun                koneksi Postgres+Redis (env), db_init()
+routes/
+  web.tenun                     rute + grup (/admin, /api)
+app/
+  Http/Controllers/             Home, Keranjang, Checkout, Auth, Admin
+  Models/                       Produk, Pengguna, Pesanan (SKEMA ORM saja)
+  Services/Cart.tenun           keranjang (Redis)
+  Support/Helper.tenun          sesi (Redis), pengguna, rupiah, sajikan()
+database/
+  Migrasi.tenun  Seeder.tenun   runner
+  migrations/                   01_produk, 02_pengguna, 03_pesanan
+  seeders/                      ProdukSeeder, PenggunaSeeder
+resources/views/                Batik (layout, partials, home, keranjang, checkout, auth, admin)
+public/                         style.css, app.js
 ```
+Model = **definisi skema saja**; query ada di controller (via ORM/qb). Seeder & migrasi terpisah di `database/`.
 
-Akun admin default: **admin@toko.id** / **admin123** (ubah di produksi).
-
-> Data contoh (produk + admin) otomatis di-seed saat pertama jalan, disimpan di penyimpanan kunci-nilai bawaan (`tenun_data.json`). Gambar produk memakai layanan foto (placeholder bertema batik/tenun) — ganti URL via panel admin.
-
-## Struktur (MVC ala Laravel)
-
+## Skala besar (10rb–1jt+ pengguna)
+Model **proses stateless** (mirip PHP-FPM):
 ```
-index.tenun                 bootstrap (tenun menjalankan ini)
-chat.tenun                  server live chat WebSocket (proses terpisah)
-Routes.tenun                definisi rute -> controller
-App/
-  Config.tenun              konfigurasi (nama app, rahasia, ws_url, admin)
-  Helper.tenun              sesi (cookie+kv), pengguna aktif, rupiah, sajikan()
-  Controllers/              Home, Produk, Keranjang, Checkout, Auth, Admin
-  Models/                   Produk, Keranjang, Pengguna, Pesanan (repo kv)
-Views/                      Batik (.batik)
-  Layout.batik              kerangka HTML (Bootstrap/jQuery/DataTables CDN)
-  Partials/                 Header, Footer, Chat (widget)
-  Home/ Keranjang/ Checkout/ Auth/ Admin/
-Public/                     style.css, app.js (widget chat)
+            [ CDN ]  (aset statis)
+               |
+       [ Nginx / Load Balancer ]
+       |        |        |
+   tenun:8081 tenun:8082 ...   (N proses, TENUN_WORKERS=1, stateless)
+       \        |        /
+         [ Redis ]  sesi, keranjang, cache, rate-limit, pubsub chat
+              |
+   [ PostgreSQL + read-replica ]
 ```
-
-## Arsitektur skala besar (10rb–1jt+ pengguna)
-
-Aplikasi dirancang **stateless** agar bisa di-scale horizontal:
-
-1. **Worker stateless + load balancer.** Jalankan N instance `tenun` di belakang Nginx/HAProxy (round-robin). Tidak ada state di memori proses.
-2. **State bersama di Redis** (modul `redis` sudah jadi dependensi). Pindahkan dari kv bawaan ke Redis:
-   - Sesi & keranjang: `redis_setex("sesi:<sid>", ttl, email)` / `cart:<sid>` — semua worker konsisten.
-   - Cache katalog: `redis_setex("cache:produk", 60, ...)` agar tidak hit DB tiap request.
-   - **Rate limiting**: `redis_batas("rl:"+ip, 100, 60)` cegah abuse.
-3. **Basis data**: pindahkan Model dari kv ke modul `orm` (MySQL/Postgres) — tambah index pada kolom yang difilter; pakai read-replica untuk query berat. Repository (`App/Models/*`) sudah memisah akses data sehingga penggantian backend terlokalisir.
-4. **Aset statis via CDN**: Bootstrap/jQuery/DataTables sudah dari CDN; sajikan `Public/` lewat CDN/edge.
-5. **Live chat horizontal**: `chat.tenun` saat ini broadcast in-process. Untuk banyak instance, publish pesan ke **Redis Pub/Sub** lalu tiap instance subscribe & `ws_siar` lokal (fan-out). Sticky-session di LB untuk koneksi WS.
-6. **Stateless = auto-scaling**: tambah/kurang worker sesuai beban (k8s HPA). Karena tak ada state lokal, scaling aman.
-
-Diagram ringkas:
-
-```
-        [ CDN ]  (aset statis)
-           |
-[ Load Balancer / Nginx ]
-     |      |      |
-  worker  worker  worker   (tenun index.tenun, stateless)
-     \     |      /
-      [ Redis ]  (sesi, keranjang, cache, rate-limit, pubsub chat)
-           |
-   [ MySQL/Postgres + replica ]
-```
+- **Stateless**: sesi/keranjang di Redis, jadi request mana pun bisa dilayani proses mana pun.
+- **Scale-out**: jalankan banyak proses `TENUN_WORKERS=1` di port berbeda; Nginx `upstream` round-robin. Tambah proses = tambah kapasitas (k8s: replika pod).
+- **DB**: index pada kolom yang difilter; read-replica untuk query berat.
+- **Cache**: `redis_setex("cache:produk", 60, ...)`; **rate-limit**: `redis_batas(...)`.
+- **Live chat**: untuk banyak instance, fan-out via Redis Pub/Sub (publish lalu tiap instance `ws_siar`).
 
 ## Lisensi
-
 MIT.

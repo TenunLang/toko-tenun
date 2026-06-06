@@ -1,0 +1,78 @@
+// Service Keranjang — disimpan di Redis (kunci "cart:<sid>"), baris "produkid:qty".
+// Stateless across worker: semua instance baca/tulis Redis yang sama.
+
+// Ambil 1 produk (peta) berdasar id; peta kosong bila tak ada.
+fungsi produk_oleh_id(id: teks): peta {
+    kembali orm_model_cari_satu(DB, model_produk(), "id", id);
+}
+
+fungsi cart_isi(sid: teks): []teks {
+    biar d: teks = redis_get(RDS, "cart:" + sid);
+    kalau panjangTeks(d) == 0 { kembali []; }
+    kembali pisah(d, "\n");
+}
+
+fungsi _cart_simpan(sid: teks, isi: teks): kosong {
+    redis_setex(RDS, "cart:" + sid, 604800, isi);
+}
+
+fungsi cart_tambah(sid: teks, id: teks): kosong {
+    biar baris: []teks = cart_isi(sid);
+    biar keluar: teks = "";
+    biar ada: bool = salah;
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        biar rec: teks = baris[i];
+        kalau f[0] == id {
+            rec = id + ":" + keTeks(keBulat(f[1]) + 1);
+            ada = benar;
+        }
+        kalau i > 0 { keluar = keluar + "\n"; }
+        keluar = keluar + rec;
+    }
+    kalau ada == salah {
+        kalau panjangTeks(keluar) > 0 { keluar = keluar + "\n"; }
+        keluar = keluar + id + ":1";
+    }
+    _cart_simpan(sid, keluar);
+}
+
+fungsi cart_hapus(sid: teks, id: teks): kosong {
+    biar baris: []teks = cart_isi(sid);
+    biar keluar: teks = "";
+    biar pertama: bool = benar;
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        kalau f[0] != id {
+            kalau pertama { keluar = baris[i]; pertama = salah; }
+            lain { keluar = keluar + "\n" + baris[i]; }
+        }
+    }
+    _cart_simpan(sid, keluar);
+}
+
+fungsi cart_kosong(sid: teks): kosong {
+    redis_del(RDS, "cart:" + sid);
+}
+
+fungsi cart_jumlah(sid: teks): bulat {
+    biar baris: []teks = cart_isi(sid);
+    biar n: bulat = 0;
+    untuk i dari 0 sampai panjang(baris) {
+        n = n + keBulat(pisah(baris[i], ":")[1]);
+    }
+    kembali n;
+}
+
+fungsi cart_total(sid: teks): bulat {
+    biar baris: []teks = cart_isi(sid);
+    biar total: bulat = 0;
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        biar p: peta = produk_oleh_id(f[0]);
+        kalau petaPunya(p, "harga") {
+            total = total + keBulat(p["harga"]) * keBulat(f[1]);
+        }
+    }
+    kembali total;
+}

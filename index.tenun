@@ -1,34 +1,34 @@
-// Titik masuk Toko Tenun & Batik. Jalankan: tenun
+// Toko Tenun & Batik — titik masuk. Jalankan: tenun
+// Pastikan migrasi & seed sudah dijalankan:
+//   tenun database/Migrasi.tenun
+//   tenun database/Seeder.tenun
 impor "jala";
 
-impor "./App/Config.tenun";
+impor "./config/app.tenun";
+impor "./config/database.tenun";
 
-impor "./App/Models/Produk.tenun";
-impor "./App/Models/Keranjang.tenun";
-impor "./App/Models/Pengguna.tenun";
-impor "./App/Models/Pesanan.tenun";
+impor "./app/Models/Produk.tenun";
+impor "./app/Models/Pengguna.tenun";
+impor "./app/Models/Pesanan.tenun";
 
-impor "./App/Helper.tenun";
+impor "./app/Support/Helper.tenun";
+impor "./app/Services/Cart.tenun";
 
-impor "./App/Controllers/Home.tenun";
-impor "./App/Controllers/Produk.tenun";
-impor "./App/Controllers/Keranjang.tenun";
-impor "./App/Controllers/Checkout.tenun";
-impor "./App/Controllers/Auth.tenun";
-impor "./App/Controllers/Admin.tenun";
+impor "./app/Http/Controllers/Home.tenun";
+impor "./app/Http/Controllers/Keranjang.tenun";
+impor "./app/Http/Controllers/Checkout.tenun";
+impor "./app/Http/Controllers/Auth.tenun";
+impor "./app/Http/Controllers/Admin.tenun";
 
-impor "./Routes.tenun";
+impor "./routes/web.tenun";
 
-// Data awal (idempoten): produk contoh + akun admin.
-produk_seed();
-pengguna_seed();
+jala_statik("public");
 
-jala_statik("Public");
-
+// Koneksi DB/Redis dibuka malas di worker (tiap proxy/worker punya soket sendiri).
 fungsi tangani(metode: teks, jalur: teks, badan: teks): teks {
+    kalau DB < 0 { db_init(); }
     kembali jala_tangani(metode, jalur, badan);
 }
 
 cetak("Toko Tenun jalan di http://localhost:8080");
-cetak("Admin: admin@toko.id / admin123");
 jala_layani(8080);
