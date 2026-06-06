@@ -1,7 +1,0 @@
-// Migrasi: tabel produk.
-fungsi naikProduk(): kosong {
-    biar d: bulat = db();
-    orm_sinkron(d, modelProduk());
-    orm_tutup(d);
-    cetak("  migrasi: produk");
-}

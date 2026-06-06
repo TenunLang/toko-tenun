@@ -1,0 +1,16 @@
+<div id="chat-widget">
+  <button id="chat-toggle" class="btn btn-warning rounded-circle shadow"><i class="bi bi-chat-dots-fill fs-4"></i></button>
+  <div id="chat-box" class="card shadow d-none">
+    <div class="card-header text-white d-flex justify-content-between align-items-center" style="background:#5c3a21">
+      <span><i class="bi bi-headset"></i> Live Chat</span>
+      <button id="chat-close" class="btn-close btn-close-white"></button>
+    </div>
+    <div id="chat-msgs" class="card-body small"></div>
+    <div class="card-footer p-2">
+      <div class="input-group">
+        <input id="chat-input" class="form-control form-control-sm" placeholder="Tulis pesan...">
+        <button id="chat-send" class="btn btn-sm btn-warning">Kirim</button>
+      </div>
+    </div>
+  </div>
+</div>

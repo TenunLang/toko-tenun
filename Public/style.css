@@ -1,0 +1,18 @@
+:root { --coklat: #5c3a21; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: #faf7f4; color: #2b2118; }
+a { color: var(--coklat); }
+.btn-warning { --bs-btn-color:#3b2517; --bs-btn-hover-color:#3b2517; }
+.produk-card { transition: transform .15s ease, box-shadow .15s ease; }
+.produk-card:hover { transform: translateY(-4px); box-shadow: 0 .6rem 1.2rem rgba(0,0,0,.12) !important; }
+.produk-card .card-img-top { height: 200px; object-fit: cover; }
+.breadcrumb { background: transparent; padding-left: 0; }
+
+/* Live chat widget */
+#chat-widget { position: fixed; right: 20px; bottom: 20px; z-index: 1050; }
+#chat-toggle { width: 56px; height: 56px; }
+#chat-box { position: absolute; right: 0; bottom: 70px; width: 320px; max-width: 90vw; }
+#chat-msgs { height: 280px; overflow-y: auto; background: #faf7f4; }
+.chat-line { margin-bottom: .4rem; }
+.chat-line .bubble { display: inline-block; padding: .35rem .6rem; border-radius: .8rem; background: #eee; }
+.chat-line.me { text-align: right; }
+.chat-line.me .bubble { background: #ffe08a; }

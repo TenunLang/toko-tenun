@@ -1,0 +1,66 @@
+// Pembantu: sesi (cookie sid + kv), pengguna aktif, format rupiah.
+// Sesi disimpan di kv "sesi:<sid>" -> email. Untuk skala: ganti ke Redis (setex).
+
+fungsi sid_kini(): teks {
+    biar s: teks = web_cookie("sid");
+    kalau panjangTeks(s) == 0 {
+        s = auth_token_acak(16);
+        web_set_cookie("sid", s);
+    }
+    kembali s;
+}
+
+fungsi masuk_set(email: teks): kosong {
+    simpan("sesi:" + sid_kini(), email);
+}
+
+fungsi keluar_set(): kosong {
+    hapus("sesi:" + sid_kini());
+}
+
+// Email pengguna aktif ("" bila tamu).
+fungsi user_kini(): teks {
+    kembali muat("sesi:" + sid_kini());
+}
+
+fungsi sudah_masuk(): bool {
+    kembali panjangTeks(user_kini()) > 0;
+}
+
+fungsi is_admin(): bool {
+    kembali pengguna_peran(user_kini()) == "admin";
+}
+
+// Render view dengan tata letak + variabel umum (nama app, keranjang, pengguna).
+fungsi sajikan(view: teks, judul: teks, data: peta): teks {
+    data["judul"] = judul;
+    data["nama_app"] = jala_konfig("nama_app");
+    data["ws_url"] = jala_konfig("ws_url");
+    data["keranjang_jumlah"] = keTeks(keranjang_jumlah(sid_kini()));
+    kalau sudah_masuk() {
+        data["user_nama"] = pengguna_nama(user_kini());
+        data["masuk"] = "1";
+    } lain {
+        data["user_nama"] = "";
+        data["masuk"] = "";
+    }
+    kalau is_admin() { data["admin"] = "1"; } lain { data["admin"] = ""; }
+    kembali jala_tampil_tata("Layout", view, data);
+}
+
+// Format angka -> "Rp 1.234.567".
+fungsi rupiah(n: bulat): teks {
+    biar s: teks = keTeks(n);
+    biar keluar: teks = "";
+    biar c: bulat = 0;
+    biar i: bulat = panjangTeks(s) - 1;
+    selama i >= 0 {
+        keluar = potong(s, i, 1) + keluar;
+        c = c + 1;
+        kalau (c % 3) == 0 {
+            kalau i > 0 { keluar = "." + keluar; }
+        }
+        i = i - 1;
+    }
+    kembali "Rp " + keluar;
+}

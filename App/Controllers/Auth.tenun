@@ -1,0 +1,46 @@
+// Controller Auth — masuk, daftar, keluar.
+
+fungsi masuk_form(): teks {
+    kembali sajikan("Auth/Masuk", "Masuk", peta{ "galat": "" });
+}
+
+fungsi masuk_proses(): teks {
+    biar email: teks = jala_input("email");
+    biar sandi: teks = jala_input("sandi");
+    kalau pengguna_cek(email, sandi) {
+        masuk_set(email);
+        kalau pengguna_peran(email) == "admin" { kembali jala_redirect("/admin"); }
+        kembali jala_redirect("/");
+    }
+    kembali sajikan("Auth/Masuk", "Masuk", peta{ "galat": "Email atau sandi salah." });
+}
+
+fungsi daftar_form(): teks {
+    kembali sajikan("Auth/Daftar", "Daftar", peta{ "galat": "" });
+}
+
+fungsi daftar_proses(): teks {
+    biar email: teks = jala_input("email");
+    biar nama: teks = jala_input("nama");
+    biar sandi: teks = jala_input("sandi");
+    kalau panjangTeks(email) == 0 {
+        kembali sajikan("Auth/Daftar", "Daftar", peta{ "galat": "Lengkapi semua kolom." });
+    }
+    kalau panjangTeks(nama) == 0 {
+        kembali sajikan("Auth/Daftar", "Daftar", peta{ "galat": "Lengkapi semua kolom." });
+    }
+    kalau panjangTeks(sandi) < 6 {
+        kembali sajikan("Auth/Daftar", "Daftar", peta{ "galat": "Sandi minimal 6 karakter." });
+    }
+    kalau pengguna_ada(email) {
+        kembali sajikan("Auth/Daftar", "Daftar", peta{ "galat": "Email sudah terdaftar." });
+    }
+    pengguna_daftar(email, nama, sandi);
+    masuk_set(email);
+    kembali jala_redirect("/");
+}
+
+fungsi keluar_aksi(): teks {
+    keluar_set();
+    kembali jala_redirect("/");
+}

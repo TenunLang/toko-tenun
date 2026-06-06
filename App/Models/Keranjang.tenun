@@ -1,0 +1,73 @@
+// Model Keranjang — per-sesi (kunci "cart:<sid>"). Baris: "produkid:qty".
+// Untuk skala besar: pindah ke Redis (redis_setex) agar antar-worker konsisten.
+
+fungsi keranjang_isi(sid: teks): []teks {
+    biar d: teks = muat("cart:" + sid);
+    kalau panjangTeks(d) == 0 { kembali []; }
+    kembali pisah(d, "\n");
+}
+
+fungsi keranjang_tambah(sid: teks, id: teks): kosong {
+    biar baris: []teks = keranjang_isi(sid);
+    biar keluar: teks = "";
+    biar ada: bool = salah;
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        biar rec: teks = baris[i];
+        kalau f[0] == id {
+            rec = id + ":" + keTeks(keBulat(f[1]) + 1);
+            ada = benar;
+        }
+        kalau i > 0 { keluar = keluar + "\n"; }
+        keluar = keluar + rec;
+    }
+    kalau ada == salah {
+        kalau panjangTeks(keluar) > 0 { keluar = keluar + "\n"; }
+        keluar = keluar + id + ":1";
+    }
+    simpan("cart:" + sid, keluar);
+}
+
+fungsi keranjang_hapus(sid: teks, id: teks): kosong {
+    biar baris: []teks = keranjang_isi(sid);
+    biar keluar: teks = "";
+    biar pertama: bool = benar;
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        kalau f[0] != id {
+            kalau pertama { keluar = baris[i]; pertama = salah; }
+            lain { keluar = keluar + "\n" + baris[i]; }
+        }
+    }
+    simpan("cart:" + sid, keluar);
+}
+
+fungsi keranjang_kosong(sid: teks): kosong {
+    hapus("cart:" + sid);
+}
+
+// Jumlah total item (untuk badge).
+fungsi keranjang_jumlah(sid: teks): bulat {
+    biar baris: []teks = keranjang_isi(sid);
+    biar n: bulat = 0;
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        n = n + keBulat(f[1]);
+    }
+    kembali n;
+}
+
+// Total harga (Rp).
+fungsi keranjang_total(sid: teks): bulat {
+    biar baris: []teks = keranjang_isi(sid);
+    biar total: bulat = 0;
+    untuk i dari 0 sampai panjang(baris) {
+        biar f: []teks = pisah(baris[i], ":");
+        biar p: teks = produk_cari(f[0]);
+        kalau panjangTeks(p) > 0 {
+            biar pf: []teks = pisah(p, "|");
+            total = total + keBulat(pf[3]) * keBulat(f[1]);
+        }
+    }
+    kembali total;
+}

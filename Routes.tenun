@@ -1,0 +1,34 @@
+// Rute aplikasi. Pola -> fungsi controller.
+
+// Etalase
+jala_get("/", home_index);
+jala_get("/produk/:id", produk_detail);
+
+// Keranjang
+jala_post("/keranjang/tambah/:id", keranjang_tambah_aksi);
+jala_get("/keranjang/hapus/:id", keranjang_hapus_aksi);
+jala_get("/keranjang", keranjang_lihat);
+
+// Checkout
+jala_get("/checkout", checkout_form);
+jala_post("/checkout", checkout_proses);
+jala_get("/pesanan/:kode", pesanan_konfirmasi);
+
+// Autentikasi
+jala_get("/masuk", masuk_form);
+jala_post("/masuk", masuk_proses);
+jala_get("/daftar", daftar_form);
+jala_post("/daftar", daftar_proses);
+jala_get("/keluar", keluar_aksi);
+
+// Admin
+jala_get("/admin", admin_dashboard);
+jala_get("/admin/produk", admin_produk);
+jala_post("/admin/produk", admin_produk_simpan);
+jala_get("/admin/produk/hapus/:id", admin_produk_hapus);
+jala_get("/admin/pesanan", admin_pesanan);
+jala_get("/admin/chat", admin_chat);
+
+// API (DataTables)
+jala_get("/api/produk", api_produk);
+jala_get("/api/pesanan", api_pesanan);

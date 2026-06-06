@@ -1,0 +1,25 @@
+<footer class="text-white mt-5 pt-5 pb-4" style="background:#3b2517">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <h5 class="fw-bold"><i class="bi bi-bag-heart"></i> {{nama_app}}</h5>
+        <p class="small text-white-50">Wastra Nusantara asli: batik tulis, tenun ikat, songket. Dari pengrajin untuk Indonesia.</p>
+      </div>
+      <div class="col-md-4">
+        <h6 class="fw-bold">Kategori</h6>
+        <ul class="list-unstyled small">
+          <li><a class="link-light text-decoration-none" href="/?kategori=Batik">Batik</a></li>
+          <li><a class="link-light text-decoration-none" href="/?kategori=Tenun">Tenun</a></li>
+          <li><a class="link-light text-decoration-none" href="/?kategori=Pakaian">Pakaian</a></li>
+        </ul>
+      </div>
+      <div class="col-md-4">
+        <h6 class="fw-bold">Bantuan</h6>
+        <p class="small text-white-50 mb-1"><i class="bi bi-chat-dots"></i> Live chat tersedia (pojok kanan bawah).</p>
+        <p class="small text-white-50"><i class="bi bi-envelope"></i> halo@tenunbatik.id</p>
+      </div>
+    </div>
+    <hr class="border-secondary">
+    <p class="text-center small text-white-50 mb-0">&copy; 2026 {{nama_app}} — dibuat dengan kerangka Jala (Tenun).</p>
+  </div>
+</footer>

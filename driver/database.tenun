@@ -1,8 +1,0 @@
-// Driver database — muat ORM + konektor, sediakan koneksi.
-impor "orm";
-impor "mysql";
-impor "postgres";
-
-fungsi db(): bulat {
-    kembali orm_sambung("postgres", "127.0.0.1", 5432, "postgres", "", "postgres");
-}

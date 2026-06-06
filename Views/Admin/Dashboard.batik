@@ -1,0 +1,13 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h3 class="fw-bold mb-0"><i class="bi bi-speedometer2"></i> Dashboard Admin</h3>
+  <div class="btn-group">
+    <a href="/admin/produk" class="btn btn-outline-dark btn-sm">Produk</a>
+    <a href="/admin/pesanan" class="btn btn-outline-dark btn-sm">Pesanan</a>
+    <a href="/admin/chat" class="btn btn-outline-dark btn-sm">Live Chat</a>
+  </div>
+</div>
+<div class="row g-3">
+  <div class="col-md-4"><div class="card text-white shadow-sm border-0" style="background:#5c3a21"><div class="card-body"><div class="d-flex justify-content-between"><div><div class="small">Total Produk</div><div class="fs-2 fw-bold">{{jum_produk}}</div></div><i class="bi bi-box-seam fs-1 opacity-50"></i></div></div></div></div>
+  <div class="col-md-4"><div class="card text-white shadow-sm border-0 bg-success"><div class="card-body"><div class="d-flex justify-content-between"><div><div class="small">Total Pesanan</div><div class="fs-2 fw-bold">{{jum_pesanan}}</div></div><i class="bi bi-receipt fs-1 opacity-50"></i></div></div></div></div>
+  <div class="col-md-4"><div class="card text-white shadow-sm border-0 bg-warning"><div class="card-body"><div class="d-flex justify-content-between"><div><div class="small">Omzet</div><div class="fs-4 fw-bold">{{omzet}}</div></div><i class="bi bi-cash-stack fs-1 opacity-50"></i></div></div></div></div>
+</div>

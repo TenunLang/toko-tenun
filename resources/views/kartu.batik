@@ -1,7 +1,0 @@
-<div class="kartu">
-  <div class="gbr {{jenis}}">{{jenis}}</div>
-  <h3><a href="/produk/{{id}}">{{nama}}</a></h3>
-  <p class="harga">{{harga}}</p>
-  <p class="stok">Stok: {{stok}}</p>
-  <a class="tombol" href="/keranjang/tambah/{{id}}">+ Keranjang</a>
-</div>

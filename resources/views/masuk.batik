@@ -1,9 +1,0 @@
-<div class="form-kotak">
-  <h1>Masuk</h1>
-  <form method="post" action="/masuk">
-    <label>Email<input type="email" name="email" required></label>
-    <label>Sandi<input type="password" name="sandi" required></label>
-    <button class="tombol" type="submit">Masuk</button>
-  </form>
-  <p>Belum punya akun? <a href="/daftar">Daftar</a></p>
-</div>

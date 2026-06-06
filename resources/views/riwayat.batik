@@ -1,7 +1,0 @@
-<h1>Pesanan Saya</h1>
-<table class="tabel">
-  <thead><tr><th>No</th><th>Ringkasan</th><th>Total</th><th>Tanggal</th></tr></thead>
-  <tbody>
-    {{baris}}
-  </tbody>
-</table>
