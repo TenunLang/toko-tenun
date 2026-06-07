@@ -27,6 +27,9 @@ tenun database/Seeder.tenun     # isi produk (dari produk.csv) + admin
 
 # Web + live chat jadi SATU proses (WebSocket di port yang sama, 8080):
 TENUN_WORKERS=1 tenun
+# Linux server: live chat broadcast jalan penuh dalam 1 proses (soket blocking biasa).
+# Multi-proses (di belakang Nginx): fan-out chat antar-instance via Redis Pub/Sub (lihat Skala).
+# Catatan: di Windows dev, broadcast antar-klien terbatas (kuirk IOCP std.net) — pakai Linux untuk produksi.
 # atau:
 powershell -ExecutionPolicy Bypass -File tools/start.ps1   # Windows
 bash tools/start.sh                                         # Linux/macOS
