@@ -7,19 +7,22 @@
   var input = document.getElementById('chat-input');
   var send = document.getElementById('chat-send');
   if (!toggle) return;
-  var ws = null, nama = 'Tamu' + Math.floor(Math.random() * 1000);
+  var ws = null, siap = false, nama = 'Tamu' + Math.floor(Math.random() * 1000);
   function add(text) {
     var d = document.createElement('div'); d.className = 'chat-line';
     var b = document.createElement('span'); b.className = 'bubble'; b.textContent = text;
     d.appendChild(b); msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight;
   }
   function connect() {
-    try { ws = new WebSocket(window.WS_URL); } catch (e) { return; }
-    ws.onopen = function () { add('Terhubung ke layanan chat.'); };
+    try { ws = new WebSocket(window.WS_URL); } catch (e) { jadwalkan(); return; }
+    ws.onopen = function () { siap = true; add('Terhubung ke layanan chat.'); };
     ws.onmessage = function (e) { add(e.data); };
-    ws.onclose = function () { add('Koneksi chat terputus.'); };
+    ws.onclose = function () { if (siap) add('Koneksi terputus, menyambung ulang...'); siap = false; jadwalkan(); };
+    ws.onerror = function () { try { ws.close(); } catch (_) {} };
   }
-  toggle.addEventListener('click', function () { box.classList.toggle('d-none'); if (!ws) connect(); });
+  function jadwalkan() { setTimeout(connect, 3000); } // auto-reconnect tiap 3 dtk
+  connect(); // sambung otomatis saat halaman dimuat
+  toggle.addEventListener('click', function () { box.classList.toggle('d-none'); });
   if (close) close.addEventListener('click', function () { box.classList.add('d-none'); });
   function kirim() {
     var v = (input.value || '').trim();
