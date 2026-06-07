@@ -25,13 +25,11 @@ tenun database/Migrasi.tenun    # buat tabel
 tenun tools/scrape.tenun        # scrape 30 produk batik asli (modul jaring) -> database/seeders/produk.csv
 tenun database/Seeder.tenun     # isi produk (dari produk.csv) + admin
 
-# Jalankan web + live chat sekaligus (disarankan):
+# Web + live chat jadi SATU proses (WebSocket di port yang sama, 8080):
+TENUN_WORKERS=1 tenun
+# atau:
 powershell -ExecutionPolicy Bypass -File tools/start.ps1   # Windows
 bash tools/start.sh                                         # Linux/macOS
-
-# atau manual (dua terminal):
-#   TENUN_WORKERS=1 tenun          # web  http://localhost:8080
-#   tenun chat.tenun               # chat ws://localhost:3000
 ```
 Admin: **admin@toko.id** / **admin123**.
 
