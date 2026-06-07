@@ -1,26 +1,35 @@
-<div class="hero p-4 p-md-5 mb-3">
-  <div class="row align-items-center">
-    <div class="col-md-8">
-      <h1 class="fw-bold mb-2">Batik & Wastra Nusantara</h1>
-      <p class="lead mb-0">Ribuan motif batik tulis & cap asli pengrajin. Gratis ongkir pilihan, original, amanah.</p>
-    </div>
-    <div class="col-md-4 text-md-end d-none d-md-block"><i class="bi bi-bag-heart-fill" style="font-size:6rem;opacity:.2"></i></div>
-  </div>
+<div class="offer p-4 mb-4">
+  <span class="badge bg-dark mb-2">Penawaran Terbatas!</span>
+  <div class="h5 mb-0 fw-semibold">Diskon Spesial Untukmu</div>
+  <div class="big my-1">40% OFF</div>
+  <small class="text-white-50">Berlaku untuk koleksi batik pilihan</small>
+  <div class="mt-3"><a href="/?kategori=Dress" class="claim">Klaim Sekarang</a></div>
 </div>
 
-<div class="kat-bar rounded mb-3 px-2 py-1">
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h6 class="sec-title mb-0">Kategori</h6>
+  <a href="/" class="see-all">Lihat Semua</a>
+</div>
+<div class="kat-row mb-4">
+  <a class="kat-item" href="/?kategori=Dress"><div class="kat-ic"><i class="bi bi-bag-heart"></i></div><div class="lbl">Dress</div></a>
+  <a class="kat-item" href="/?kategori=Kemeja"><div class="kat-ic"><i class="bi bi-person-vcard"></i></div><div class="lbl">Kemeja</div></a>
+  <a class="kat-item" href="/?kategori=Outer"><div class="kat-ic"><i class="bi bi-layers"></i></div><div class="lbl">Outer</div></a>
+  <a class="kat-item" href="/?kategori=Blouse"><div class="kat-ic"><i class="bi bi-flower1"></i></div><div class="lbl">Blouse</div></a>
+  <a class="kat-item" href="/?kategori=Anak"><div class="kat-ic"><i class="bi bi-emoji-smile"></i></div><div class="lbl">Anak</div></a>
+  <a class="kat-item" href="/?kategori=Bahan"><div class="kat-ic"><i class="bi bi-scissors"></i></div><div class="lbl">Bahan</div></a>
+</div>
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h6 class="sec-title mb-0">{{#jika kategori}}{{kategori}}{{/jika kategori}}{{#kecuali kategori}}Flash Sale{{/kecuali kategori}}</h6>
+  {{#jika kunci}}<span class="text-muted small">pencarian: "{{kunci}}"</span>{{/jika kunci}}
+</div>
+<div class="fs-tabs mb-3">
   <a href="/" class="{{#kecuali kategori}}active{{/kecuali kategori}}">Semua</a>
   <a href="/?kategori=Dress">Dress</a>
   <a href="/?kategori=Kemeja">Kemeja</a>
   <a href="/?kategori=Outer">Outer</a>
-  <a href="/?kategori=Blouse">Blouse</a>
   <a href="/?kategori=Anak">Anak</a>
-  <a href="/?kategori=Bahan">Bahan Kain</a>
-</div>
-
-<div class="d-flex justify-content-between align-items-center mb-2">
-  <h5 class="fw-bold mb-0">{{#jika kategori}}{{kategori}}{{/jika kategori}}{{#kecuali kategori}}Untukmu{{/kecuali kategori}}</h5>
-  {{#jika kunci}}<span class="text-muted small">hasil pencarian: "{{kunci}}"</span>{{/jika kunci}}
+  <a href="/?kategori=Bahan">Bahan</a>
 </div>
 
 <div class="row g-2 g-md-3">

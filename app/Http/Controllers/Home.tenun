@@ -1,19 +1,16 @@
-// Controller Home — katalog marketplace (filter kategori + pencarian).
-
-fungsi _bintang(): teks {
-    kembali "<i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i>";
-}
+// Controller Home — katalog gaya marketplace mobile.
 
 fungsi _kartu(p: peta): teks {
     kembali "<div class=\"col-6 col-md-4 col-lg-3 mb-3\">" +
-        "<a href=\"/produk/" + p["id"] + "\" class=\"card product-card h-100 text-decoration-none\">" +
-        "<div class=\"pc-img\"><img src=\"" + p["gambar"] + "\" alt=\"" + p["nama"] + "\" loading=\"lazy\" referrerpolicy=\"no-referrer\"></div>" +
+        "<div class=\"card product-card h-100\">" +
+        "<a href=\"/produk/" + p["id"] + "\" class=\"pc-img d-block\">" +
+        "<img src=\"" + p["gambar"] + "\" alt=\"" + p["nama"] + "\" loading=\"lazy\" referrerpolicy=\"no-referrer\">" +
+        "<span class=\"pc-fav\"><i class=\"bi bi-heart\"></i></span></a>" +
         "<div class=\"card-body p-2 d-flex flex-column\">" +
-        "<div class=\"pc-title\">" + p["nama"] + "</div>" +
-        "<div class=\"pc-price\">" + rupiah(keBulat(p["harga"])) + "</div>" +
-        "<div class=\"pc-meta mt-auto\"><span class=\"pc-star\">" + _bintang() + "</span> <span class=\"pc-sold\">· " + p["terjual"] + " terjual</span></div>" +
-        "<div class=\"pc-loc\"><i class=\"bi bi-geo-alt\"></i> Solo</div>" +
-        "</div></a></div>";
+        "<a href=\"/produk/" + p["id"] + "\" class=\"pc-title text-dark\">" + p["nama"] + "</a>" +
+        "<div class=\"pc-price mt-1\">" + rupiah(keBulat(p["harga"])) + "</div>" +
+        "<div class=\"pc-meta mt-auto pt-1\"><span class=\"pc-star\"><i class=\"bi bi-star-fill\"></i></span> 5.0 · " + p["terjual"] + " terjual</div>" +
+        "</div></div></div>";
 }
 
 fungsi home_index(): teks {
@@ -46,13 +43,23 @@ fungsi produk_detail(): teks {
         jala_status(404);
         kembali sajikan("home/notfound", "Tidak Ditemukan", peta{});
     }
-    // bangun thumbnail galeri
     biar gal: []teks = pisah(p["galeri"], ",");
     biar thumbs: teks = "";
-    untuk i dari 0 sampai panjang(gal) {
+    biar batas: bulat = panjang(gal);
+    biar tampilkan: bulat = batas;
+    kalau tampilkan > 5 { tampilkan = 5; }
+    untuk i dari 0 sampai tampilkan {
         biar aktif: teks = "";
         kalau i == 0 { aktif = " active"; }
-        thumbs = thumbs + "<img src=\"" + gal[i] + "\" class=\"pd-thumb" + aktif + "\" referrerpolicy=\"no-referrer\" onclick=\"gantiGambar(this)\">";
+        kalau i == 4 {
+            kalau batas > 5 {
+                thumbs = thumbs + "<div class=\"pd-more\">+" + keTeks(batas - 4) + "</div>";
+            } lain {
+                thumbs = thumbs + "<img src=\"" + gal[i] + "\" class=\"pd-thumb" + aktif + "\" referrerpolicy=\"no-referrer\" onclick=\"gantiGambar(this)\">";
+            }
+        } lain {
+            thumbs = thumbs + "<img src=\"" + gal[i] + "\" class=\"pd-thumb" + aktif + "\" referrerpolicy=\"no-referrer\" onclick=\"gantiGambar(this)\">";
+        }
     }
     biar data: peta = peta{};
     data["id"] = p["id"];

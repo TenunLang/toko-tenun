@@ -36,3 +36,16 @@ function gantiGambar(el){
   document.querySelectorAll('.pd-thumb').forEach(function(t){ t.classList.remove('active'); });
   el.classList.add('active');
 }
+
+// Pilih ukuran / warna (visual)
+document.addEventListener('click', function (e) {
+  if (e.target.classList.contains('size-chip')) {
+    document.querySelectorAll('.size-chip').forEach(function(c){c.classList.remove('active');});
+    e.target.classList.add('active');
+  }
+  if (e.target.classList.contains('color-sw')) {
+    document.querySelectorAll('.color-sw').forEach(function(c){c.classList.remove('active');});
+    e.target.classList.add('active');
+  }
+  if (e.target.closest && e.target.closest('.pc-fav')) { e.preventDefault(); e.target.closest('.pc-fav').innerHTML='<i class="bi bi-heart-fill"></i>'; }
+});
