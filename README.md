@@ -22,7 +22,8 @@ tenun add redis
 tenun add websocket
 
 tenun database/Migrasi.tenun    # buat tabel
-tenun database/Seeder.tenun     # isi produk + admin
+tenun tools/scrape.tenun        # scrape 30 produk batik asli (modul jaring) -> database/seeders/produk.csv
+tenun database/Seeder.tenun     # isi produk (dari produk.csv) + admin
 
 # Windows: set TENUN_WORKERS=1 & tenun
 TENUN_WORKERS=1 tenun            # http://localhost:8080

@@ -1,18 +1,28 @@
-<div class="p-4 p-md-5 mb-4 rounded-3 text-white" style="background:linear-gradient(135deg,#5c3a21,#8a5a2b)">
+<div class="hero p-4 p-md-5 mb-3">
   <div class="row align-items-center">
-    <div class="col-md-7">
-      <h1 class="fw-bold">Wastra Nusantara Asli</h1>
-      <p class="lead mb-3">Batik tulis, tenun ikat, dan songket pilihan langsung dari pengrajin. Kualitas premium, harga jujur.</p>
-      <a href="/?kategori=Batik" class="btn btn-warning fw-semibold">Belanja Batik</a>
-      <a href="/?kategori=Tenun" class="btn btn-outline-light">Lihat Tenun</a>
+    <div class="col-md-8">
+      <h1 class="fw-bold mb-2">Batik & Wastra Nusantara</h1>
+      <p class="lead mb-0">Ribuan motif batik tulis & cap asli pengrajin. Gratis ongkir pilihan, original, amanah.</p>
     </div>
-    <div class="col-md-5 d-none d-md-block text-center"><i class="bi bi-bag-heart" style="font-size:8rem;opacity:.25"></i></div>
+    <div class="col-md-4 text-md-end d-none d-md-block"><i class="bi bi-bag-heart-fill" style="font-size:6rem;opacity:.2"></i></div>
   </div>
 </div>
-<div class="d-flex justify-content-between align-items-center mb-3">
-  <h4 class="fw-bold mb-0">{{#jika kategori}}Kategori: {{kategori}}{{/jika kategori}}{{#kecuali kategori}}Produk Terbaru{{/kecuali kategori}}</h4>
-  <a href="/" class="btn btn-sm btn-outline-secondary">Semua</a>
+
+<div class="kat-bar rounded mb-3 px-2 py-1">
+  <a href="/" class="{{#kecuali kategori}}active{{/kecuali kategori}}">Semua</a>
+  <a href="/?kategori=Dress">Dress</a>
+  <a href="/?kategori=Kemeja">Kemeja</a>
+  <a href="/?kategori=Outer">Outer</a>
+  <a href="/?kategori=Blouse">Blouse</a>
+  <a href="/?kategori=Anak">Anak</a>
+  <a href="/?kategori=Bahan">Bahan Kain</a>
 </div>
-<div class="row">
+
+<div class="d-flex justify-content-between align-items-center mb-2">
+  <h5 class="fw-bold mb-0">{{#jika kategori}}{{kategori}}{{/jika kategori}}{{#kecuali kategori}}Untukmu{{/kecuali kategori}}</h5>
+  {{#jika kunci}}<span class="text-muted small">hasil pencarian: "{{kunci}}"</span>{{/jika kunci}}
+</div>
+
+<div class="row g-2 g-md-3">
 {{produk_html}}
 </div>

@@ -2,11 +2,14 @@
 fungsi model_produk(): peta {
     biar m: peta = orm_model("produk");
     m = orm_kolom(m, "id", orm_tipe_id());
-    m = orm_kolom(m, "nama", "VARCHAR(150)");
+    m = orm_kolom(m, "nama", "VARCHAR(180)");
     m = orm_kolom(m, "kategori", "VARCHAR(50)");
     m = orm_kolom(m, "harga", "BIGINT");
     m = orm_kolom(m, "stok", "INT");
     m = orm_kolom(m, "gambar", "TEXT");
+    m = orm_kolom(m, "galeri", "TEXT");
+    m = orm_kolom(m, "sku", "VARCHAR(40)");
+    m = orm_kolom(m, "terjual", "INT");
     m = orm_kolom(m, "deskripsi", "TEXT");
     kembali m;
 }

@@ -1,17 +1,19 @@
-// Controller Home — katalog (filter kategori + pencarian).
+// Controller Home — katalog marketplace (filter kategori + pencarian).
+
+fungsi _bintang(): teks {
+    kembali "<i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i><i class=\"bi bi-star-fill\"></i>";
+}
 
 fungsi _kartu(p: peta): teks {
-    kembali "<div class=\"col-6 col-md-3 mb-4\">" +
-        "<div class=\"card h-100 shadow-sm border-0 produk-card\">" +
-        "<a href=\"/produk/" + p["id"] + "\"><img src=\"" + p["gambar"] + "\" class=\"card-img-top\" alt=\"" + p["nama"] + "\" loading=\"lazy\"></a>" +
-        "<div class=\"card-body d-flex flex-column\">" +
-        "<span class=\"badge bg-light text-dark align-self-start mb-1\">" + p["kategori"] + "</span>" +
-        "<h6 class=\"card-title\"><a href=\"/produk/" + p["id"] + "\" class=\"text-decoration-none text-dark\">" + p["nama"] + "</a></h6>" +
-        "<div class=\"mt-auto\">" +
-        "<div class=\"fw-bold text-success mb-2\">" + rupiah(keBulat(p["harga"])) + "</div>" +
-        "<form method=\"post\" action=\"/keranjang/tambah/" + p["id"] + "\">" +
-        "<button class=\"btn btn-sm btn-warning w-100\"><i class=\"bi bi-cart-plus\"></i> Keranjang</button>" +
-        "</form></div></div></div></div>";
+    kembali "<div class=\"col-6 col-md-4 col-lg-3 mb-3\">" +
+        "<a href=\"/produk/" + p["id"] + "\" class=\"card product-card h-100 text-decoration-none\">" +
+        "<div class=\"pc-img\"><img src=\"" + p["gambar"] + "\" alt=\"" + p["nama"] + "\" loading=\"lazy\"></div>" +
+        "<div class=\"card-body p-2 d-flex flex-column\">" +
+        "<div class=\"pc-title\">" + p["nama"] + "</div>" +
+        "<div class=\"pc-price\">" + rupiah(keBulat(p["harga"])) + "</div>" +
+        "<div class=\"pc-meta mt-auto\"><span class=\"pc-star\">" + _bintang() + "</span> <span class=\"pc-sold\">· " + p["terjual"] + " terjual</span></div>" +
+        "<div class=\"pc-loc\"><i class=\"bi bi-geo-alt\"></i> Solo</div>" +
+        "</div></a></div>";
 }
 
 fungsi home_index(): teks {
@@ -33,6 +35,7 @@ fungsi home_index(): teks {
     biar data: peta = peta{};
     data["produk_html"] = html;
     data["kategori"] = kat;
+    data["kunci"] = kunci;
     kembali sajikan("home/index", "Beranda", data);
 }
 
@@ -43,13 +46,24 @@ fungsi produk_detail(): teks {
         jala_status(404);
         kembali sajikan("home/notfound", "Tidak Ditemukan", peta{});
     }
+    // bangun thumbnail galeri
+    biar gal: []teks = pisah(p["galeri"], ",");
+    biar thumbs: teks = "";
+    untuk i dari 0 sampai panjang(gal) {
+        biar aktif: teks = "";
+        kalau i == 0 { aktif = " active"; }
+        thumbs = thumbs + "<img src=\"" + gal[i] + "\" class=\"pd-thumb" + aktif + "\" onclick=\"gantiGambar(this)\">";
+    }
     biar data: peta = peta{};
     data["id"] = p["id"];
     data["nama"] = p["nama"];
     data["kategori"] = p["kategori"];
     data["harga"] = rupiah(keBulat(p["harga"]));
     data["stok"] = p["stok"];
-    data["gambar"] = p["gambar"];
+    data["terjual"] = p["terjual"];
+    data["sku"] = p["sku"];
+    data["gambar"] = gal[0];
+    data["thumbs"] = thumbs;
     data["deskripsi"] = p["deskripsi"];
     kembali sajikan("home/detail", p["nama"], data);
 }

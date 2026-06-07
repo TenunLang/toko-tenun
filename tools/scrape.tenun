@@ -1,0 +1,75 @@
+// Scraper produk batik (modul-jaring). Ambil judul/harga/gambar tiap halaman
+// produk batikkerisonline.co.id, tulis ke database/seeders/produk.csv (pipe).
+// Jalankan: tenun tools/scrape.tenun   lalu: tenun database/Seeder.tenun
+impor "jaring";
+
+biar URL: []teks = [
+    "https://batikkerisonline.co.id/shop/bahan-batik-potongan-motif-peksi-laras-ati/",
+    "https://batikkerisonline.co.id/shop/bahan-batik-potongan-motif-sekar-kinanthi/",
+    "https://batikkerisonline.co.id/shop/bahan-kemeja-batik-semi-pola-motif-buana-carita/",
+    "https://batikkerisonline.co.id/shop/bahan-kemeja-batik-semi-pola-motif-manik-sekarjati/",
+    "https://batikkerisonline.co.id/shop/bahan-kemeja-batik-semi-pola-motif-merak-ati/",
+    "https://batikkerisonline.co.id/shop/bahan-kemeja-batik-semi-pola-motif-swarna-sekar-laras/",
+    "https://batikkerisonline.co.id/shop/blouse-batik-lengan-pendek-motif-sekar-kinanthi/",
+    "https://batikkerisonline.co.id/shop/dress-anak-batik-lengan-pendek-motif-peksi-laras-ati/",
+    "https://batikkerisonline.co.id/shop/dress-anak-batik-lengan-pendek-motif-sekar-kinanthi/",
+    "https://batikkerisonline.co.id/shop/dress-batik-lengan-pendek-motif-daun-patih/",
+    "https://batikkerisonline.co.id/shop/dress-batik-lengan-pendek-motif-rona-laras/",
+    "https://batikkerisonline.co.id/shop/dress-batik-lengan-stali-motif-peksi-laras-ati/",
+    "https://batikkerisonline.co.id/shop/dress-batik-lengan-stali-motif-swarna-sekar-laras/",
+    "https://batikkerisonline.co.id/shop/kemeja-anak-batik-lengan-pendek-motif-laras-ati/",
+    "https://batikkerisonline.co.id/shop/kemeja-anak-batik-lengan-pendek-motif-sekar-kinanthi/",
+    "https://batikkerisonline.co.id/shop/kemeja-reguler-fit-batik-lengan-panjang-motif-bimantara/",
+    "https://batikkerisonline.co.id/shop/kemeja-reguler-fit-batik-lengan-panjang-motif-manik-sekarjati/",
+    "https://batikkerisonline.co.id/shop/kemeja-reguler-fit-batik-lengan-panjang-motif-rona-laras/",
+    "https://batikkerisonline.co.id/shop/kemeja-reguler-fit-batik-lengan-panjang-motif-swarna-sekar-laras/",
+    "https://batikkerisonline.co.id/shop/kemeja-relaxed-fit-batik-lengan-pendek-motif-buana-carita/",
+    "https://batikkerisonline.co.id/shop/kemeja-relaxed-fit-batik-lengan-pendek-motif-daun-patih/",
+    "https://batikkerisonline.co.id/shop/kemeja-relaxed-fit-batik-lengan-pendek-motif-peksi-laras-ati/",
+    "https://batikkerisonline.co.id/shop/kemeja-relaxed-fit-batik-lengan-pendek-motif-rona-laras/",
+    "https://batikkerisonline.co.id/shop/kemeja-relaxed-fit-batik-lengan-pendek-motif-sekar-kinanthi/",
+    "https://batikkerisonline.co.id/shop/kemeja-relaxed-fit-batik-lengan-pendek-motif-swarna-sekar-laras/",
+    "https://batikkerisonline.co.id/shop/kemeja-slimfit-batik-lengan-panjang-motif-buana-carita/",
+    "https://batikkerisonline.co.id/shop/kemeja-slimfit-batik-lengan-pendek-motif-bimantara/",
+    "https://batikkerisonline.co.id/shop/kemeja-slimfit-batik-lengan-pendek-motif-manik-sekarjati/",
+    "https://batikkerisonline.co.id/shop/kemeja-slimfit-batik-lengan-pendek-motif-peksi-sinawang/",
+    "https://batikkerisonline.co.id/shop/outer-batik-lengan-3-4-motif-rona-laras/"
+];
+
+fungsi kategori_dari(url: teks): teks {
+    kalau cari(url, "dress-anak") >= 0 { kembali "Anak"; }
+    kalau cari(url, "kemeja-anak") >= 0 { kembali "Anak"; }
+    kalau cari(url, "/dress-") >= 0 { kembali "Dress"; }
+    kalau cari(url, "/kemeja-") >= 0 { kembali "Kemeja"; }
+    kalau cari(url, "/outer-") >= 0 { kembali "Outer"; }
+    kalau cari(url, "/blouse-") >= 0 { kembali "Blouse"; }
+    kalau cari(url, "/bahan-") >= 0 { kembali "Bahan"; }
+    kembali "Batik";
+}
+
+biar keluar: teks = "";
+biar ok: bulat = 0;
+untuk i dari 0 sampai panjang(URL) {
+    biar url: teks = URL[i];
+    biar html: teks = jaring_get_ua(url, "Mozilla/5.0");
+    kalau panjangTeks(html) < 1000 {
+        cetak("  lewat (gagal ambil): " + url);
+    } lain {
+        biar nama: teks = pangkas(html_antara(html, "og:title\" content=\"", " - Batik Keris"));
+        biar harga: teks = ganti(html_antara(html, "currencySymbol\">Rp</span>", "</bdi>"), ".", "");
+        biar gambar: teks = html_antara(html, "og:image\" content=\"", "\"");
+        kalau panjangTeks(nama) > 0 {
+            kalau panjangTeks(harga) == 0 { harga = "0"; }
+            biar kat: teks = kategori_dari(url);
+            biar stok: teks = keTeks(acakAngka(2, 15));
+            biar terjual: teks = keTeks(acakAngka(3, 99));
+            keluar = keluar + nama + "|" + kat + "|" + harga + "|" + stok + "|" +
+                gambar + "|" + gambar + "|BK" + keTeks(i) + "|" + terjual + "|" +
+                "Batik Keris asli. " + nama + ". Bahan katun primisima, kualitas premium.\n";
+            ok = ok + 1;
+            cetak("  ok: " + nama + " (" + harga + ")");
+        }
+    }
+}
+tulisFile("database/seeders/produk.csv", keluar);
+cetak("[scrape] " + keTeks(ok) + " produk -> database/seeders/produk.csv");

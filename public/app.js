@@ -29,3 +29,10 @@
   if (send) send.addEventListener('click', kirim);
   if (input) input.addEventListener('keydown', function (e) { if (e.key === 'Enter') kirim(); });
 })();
+
+// Galeri produk: klik thumbnail -> ganti gambar utama.
+function gantiGambar(el){
+  var main=document.getElementById('pd-main'); if(main){ main.src=el.src; }
+  document.querySelectorAll('.pd-thumb').forEach(function(t){ t.classList.remove('active'); });
+  el.classList.add('active');
+}

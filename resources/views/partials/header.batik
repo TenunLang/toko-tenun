@@ -8,9 +8,9 @@
         <button class="btn btn-warning" type="submit"><i class="bi bi-search"></i></button>
       </form>
       <ul class="navbar-nav ms-lg-3 align-items-lg-center">
-        <li class="nav-item"><a class="nav-link" href="/?kategori=Batik">Batik</a></li>
-        <li class="nav-item"><a class="nav-link" href="/?kategori=Tenun">Tenun</a></li>
-        <li class="nav-item"><a class="nav-link" href="/?kategori=Pakaian">Pakaian</a></li>
+        <li class="nav-item"><a class="nav-link" href="/?kategori=Dress">Dress</a></li>
+        <li class="nav-item"><a class="nav-link" href="/?kategori=Kemeja">Kemeja</a></li>
+        <li class="nav-item"><a class="nav-link" href="/?kategori=Outer">Outer</a></li>
         <li class="nav-item">
           <a class="nav-link position-relative" href="/keranjang"><i class="bi bi-cart3 fs-5"></i>
             {{#jika keranjang_jumlah}}<span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">{{keranjang_jumlah}}</span>{{/jika keranjang_jumlah}}

@@ -1,19 +1,46 @@
-<nav aria-label="breadcrumb"><ol class="breadcrumb">
+<nav aria-label="breadcrumb"><ol class="breadcrumb small">
   <li class="breadcrumb-item"><a href="/">Beranda</a></li>
   <li class="breadcrumb-item"><a href="/?kategori={{kategori}}">{{kategori}}</a></li>
   <li class="breadcrumb-item active">{{nama}}</li>
 </ol></nav>
-<div class="row g-4">
-  <div class="col-md-6"><img src="{{gambar}}" class="img-fluid rounded shadow-sm w-100" alt="{{nama}}"></div>
-  <div class="col-md-6">
-    <span class="badge bg-secondary mb-2">{{kategori}}</span>
-    <h2 class="fw-bold">{{nama}}</h2>
-    <div class="fs-3 text-success fw-bold mb-3">{{harga}}</div>
-    <p class="text-muted">{{deskripsi}}</p>
-    <p><i class="bi bi-box-seam"></i> Stok: <strong>{{stok}}</strong></p>
-    <form method="post" action="/keranjang/tambah/{{id}}">
-      <button class="btn btn-warning btn-lg"><i class="bi bi-cart-plus"></i> Tambah ke Keranjang</button>
-      <a href="/checkout" class="btn btn-success btn-lg">Beli Sekarang</a>
-    </form>
+
+<div class="card border-0 shadow-sm">
+ <div class="card-body">
+  <div class="row g-4">
+    <div class="col-md-5">
+      <img id="pd-main" src="{{gambar}}" class="pd-main" alt="{{nama}}">
+      <div class="d-flex flex-wrap">{{thumbs}}</div>
+    </div>
+    <div class="col-md-7">
+      <span class="badge bg-light text-dark border mb-2">{{kategori}}</span>
+      <h4 class="fw-bold">{{nama}}</h4>
+      <div class="d-flex align-items-center gap-2 text-muted small mb-2">
+        <span class="pc-star"><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i></span>
+        <span>5.0</span><span>·</span><span>{{terjual}} terjual</span><span>·</span><span>SKU {{sku}}</span>
+      </div>
+      <div class="pd-price-wrap p-3 my-3">
+        <span class="pd-price">{{harga}}</span>
+      </div>
+
+      <div class="varian mb-2">
+        <div class="small text-muted mb-1">Ukuran</div>
+        <span class="chip">S</span><span class="chip">M</span><span class="chip">L</span><span class="chip">XL</span>
+      </div>
+
+      <p class="text-muted small mt-3">{{deskripsi}}</p>
+      <p class="small mb-3"><i class="bi bi-box-seam"></i> Stok: <strong>{{stok}}</strong> &nbsp;·&nbsp; <i class="bi bi-geo-alt"></i> Dikirim dari Solo</p>
+
+      <form method="post" action="/keranjang/tambah/{{id}}" class="d-flex gap-2">
+        <button class="btn btn-outline-danger btn-lg"><i class="bi bi-cart-plus"></i> Keranjang</button>
+        <a href="/checkout" class="btn btn-merah btn-lg flex-grow-1">Beli Sekarang</a>
+      </form>
+
+      <div class="d-flex gap-3 mt-3 small text-muted">
+        <span><i class="bi bi-shield-check"></i> Original</span>
+        <span><i class="bi bi-truck"></i> Gratis ongkir*</span>
+        <span><i class="bi bi-arrow-repeat"></i> Garansi tukar</span>
+      </div>
+    </div>
   </div>
+ </div>
 </div>
