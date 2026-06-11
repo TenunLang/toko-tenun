@@ -30,5 +30,7 @@ fungsi tangani(metode: teks, jalur: teks, badan: teks): teks {
     kembali jala_tangani(metode, jalur, badan);
 }
 
-cetak("Toko Tenun jalan di http://localhost:8080");
-jala_layani(8080);
+// Port dari env (.env / TENUN_PORT), fallback 8080.
+biar port: bulat = keBulat(env_atau("TENUN_PORT", "8080"));
+cetak("Toko Tenun jalan di http://localhost:" + keTeks(port));
+jala_layani(port);

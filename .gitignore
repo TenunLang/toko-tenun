@@ -2,3 +2,4 @@ tenun_modul/
 tenun_data.json
 *.log
 .firecrawl/
+.env
