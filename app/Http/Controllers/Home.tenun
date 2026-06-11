@@ -2,13 +2,13 @@
 fungsi _kartu(p: peta): teks {
     kembali "<div class=\"col-6 col-md-4 col-lg-3 mb-3\">" +
         "<div class=\"card product-card h-100\">" +
-        "<a href=\"/produk/" + p["id"] + "\" class=\"pc-img d-block\">" +
-        "<img src=\"" + p["gambar"] + "\" alt=\"" + p["nama"] + "\" loading=\"lazy\" referrerpolicy=\"no-referrer\">" +
+        "<a href=\"/produk/" + aman(p["id"]) + "\" class=\"pc-img d-block\">" +
+        "<img src=\"" + aman(p["gambar"]) + "\" alt=\"" + aman(p["nama"]) + "\" loading=\"lazy\" referrerpolicy=\"no-referrer\">" +
         "<span class=\"pc-fav\"><i class=\"bi bi-heart\"></i></span></a>" +
         "<div class=\"card-body p-2 d-flex flex-column\">" +
-        "<a href=\"/produk/" + p["id"] + "\" class=\"pc-title text-dark\">" + p["nama"] + "</a>" +
+        "<a href=\"/produk/" + aman(p["id"]) + "\" class=\"pc-title text-dark\">" + aman(p["nama"]) + "</a>" +
         "<div class=\"pc-price mt-1\">" + rupiah(keBulat(p["harga"])) + "</div>" +
-        "<div class=\"pc-meta mt-auto pt-1\"><span class=\"pc-star\"><i class=\"bi bi-star-fill\"></i></span> 5.0 · " + p["terjual"] + " terjual</div>" +
+        "<div class=\"pc-meta mt-auto pt-1\"><span class=\"pc-star\"><i class=\"bi bi-star-fill\"></i></span> 5.0 · " + aman(p["terjual"]) + " terjual</div>" +
         "</div></div></div>";
 }
 
@@ -30,8 +30,8 @@ fungsi home_index(): teks {
     }
     biar data: peta = peta{};
     data["produk_html"] = html;
-    data["kategori"] = kat;
-    data["kunci"] = kunci;
+    data["kategori"] = aman(kat);
+    data["kunci"] = aman(kunci);
     kembali sajikan("home/index", "Beranda", data);
 }
 
@@ -54,22 +54,22 @@ fungsi produk_detail(): teks {
             kalau batas > 5 {
                 thumbs = thumbs + "<div class=\"pd-more\">+" + keTeks(batas - 4) + "</div>";
             } lain {
-                thumbs = thumbs + "<img src=\"" + gal[i] + "\" class=\"pd-thumb" + aktif + "\" referrerpolicy=\"no-referrer\" onclick=\"gantiGambar(this)\">";
+                thumbs = thumbs + "<img src=\"" + aman(gal[i]) + "\" class=\"pd-thumb" + aktif + "\" referrerpolicy=\"no-referrer\" onclick=\"gantiGambar(this)\">";
             }
         } lain {
             thumbs = thumbs + "<img src=\"" + gal[i] + "\" class=\"pd-thumb" + aktif + "\" referrerpolicy=\"no-referrer\" onclick=\"gantiGambar(this)\">";
         }
     }
     biar data: peta = peta{};
-    data["id"] = p["id"];
-    data["nama"] = p["nama"];
-    data["kategori"] = p["kategori"];
+    data["id"] = aman(p["id"]);
+    data["nama"] = aman(p["nama"]);
+    data["kategori"] = aman(p["kategori"]);
     data["harga"] = rupiah(keBulat(p["harga"]));
-    data["stok"] = p["stok"];
-    data["terjual"] = p["terjual"];
-    data["sku"] = p["sku"];
-    data["gambar"] = gal[0];
+    data["stok"] = aman(p["stok"]);
+    data["terjual"] = aman(p["terjual"]);
+    data["sku"] = aman(p["sku"]);
+    data["gambar"] = aman(gal[0]);
     data["thumbs"] = thumbs;
-    data["deskripsi"] = p["deskripsi"];
-    kembali sajikan("home/detail", p["nama"], data);
+    data["deskripsi"] = aman(p["deskripsi"]);
+    kembali sajikan("home/detail", aman(p["nama"]), data);
 }

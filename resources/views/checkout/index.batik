@@ -2,7 +2,7 @@
 <div class="row g-4">
   <div class="col-md-7">
     {{#jika galat}}<div class="alert alert-danger">{{galat}}</div>{{/jika galat}}
-    <form method="post" action="/checkout" class="card card-body shadow-sm border-0">
+    <form method="post" action="/checkout" class="card card-body shadow-sm border-0">{{csrf}}
       <div class="mb-3"><label class="form-label">Nama Penerima</label><input name="nama" class="form-control" value="{{nama_user}}" required></div>
       <div class="mb-3"><label class="form-label">Email</label><input name="email" type="email" class="form-control" value="{{email}}"></div>
       <div class="mb-3"><label class="form-label">Alamat Pengiriman</label><textarea name="alamat" class="form-control" rows="3" required></textarea></div>

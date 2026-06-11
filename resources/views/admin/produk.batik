@@ -4,7 +4,7 @@
 </div>
 <div class="collapse mb-4" id="form-produk">
   <div class="card card-body shadow-sm border-0">
-    <form method="post" action="/admin/produk" class="row g-2">
+    <form method="post" action="/admin/produk" class="row g-2">{{csrf}}
       <div class="col-md-4"><input name="nama" class="form-control" placeholder="Nama produk" required></div>
       <div class="col-md-2"><select name="kategori" class="form-select"><option>Kemeja</option><option>Dress</option><option>Blouse</option><option>Outer</option><option>Anak</option><option>Bahan</option></select></div>
       <div class="col-md-2"><input name="harga" type="number" class="form-control" placeholder="Harga" required></div>

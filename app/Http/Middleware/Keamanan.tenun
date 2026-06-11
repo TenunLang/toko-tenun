@@ -1,0 +1,79 @@
+// Lapisan keamanan global aplikasi.
+// Didaftarkan di index.tenun via jala_pakai(...). Tiap middleware adalah fungsi
+// tanpa argumen; mengembalikan teks tak kosong untuk menghentikan request
+// (jadi badan respons), atau "" untuk lanjut ke middleware/rute berikutnya.
+
+// Escape HTML — cegah XSS. Pakai untuk SEMUA data tak-tepercaya yang ditaruh
+// ke dalam HTML (nama produk, input pencarian, nama pengguna, dll).
+fungsi aman(s: teks): teks {
+    biar r: teks = ganti(s, "&", "&amp;");
+    r = ganti(r, "<", "&lt;");
+    r = ganti(r, ">", "&gt;");
+    r = ganti(r, "\"", "&quot;");
+    r = ganti(r, "'", "&#39;");
+    kembali r;
+}
+
+// IP klien dari header proxy nginx (X-Real-IP / X-Forwarded-For), fallback "?".
+fungsi klien_ip(): teks {
+    biar ip: teks = jala_header("X-Real-IP");
+    kalau panjangTeks(ip) > 0 { kembali ip; }
+    biar ff: teks = jala_header("X-Forwarded-For");
+    kalau panjangTeks(ff) > 0 {
+        biar bagian: []teks = pisah(ff, ",");
+        kembali pangkas(bagian[0]);
+    }
+    kembali "?";
+}
+
+// (1) Header keamanan + blokir path traversal. Jalan tiap request.
+fungsi mw_keamanan(): teks {
+    headerKan("X-Content-Type-Options", "nosniff");
+    headerKan("X-Frame-Options", "DENY");
+    headerKan("Referrer-Policy", "strict-origin-when-cross-origin");
+    headerKan("Permissions-Policy", "geolocation=(), microphone=(), camera=()");
+    headerKan("Content-Security-Policy",
+        "default-src 'self'; " +
+        "img-src 'self' https: data:; " +
+        "style-src 'self' 'unsafe-inline' https:; " +
+        "script-src 'self' 'unsafe-inline' https:; " +
+        "font-src 'self' https: data:; " +
+        "connect-src 'self' ws: wss:; " +
+        "object-src 'none'; base-uri 'self'; frame-ancestors 'none'");
+
+    // Tolak path traversal / null byte.
+    biar jalur: teks = jala_jalur();
+    kalau cari(jalur, "..") >= 0 {
+        jala_status(400);
+        kembali "Permintaan tidak valid.";
+    }
+    kembali "";
+}
+
+// (2) Rate-limit endpoint sensitif (brute force login/daftar): 10 / menit / IP.
+fungsi mw_batas_masuk(): teks {
+    kalau jala_metode() != "POST" { kembali ""; }
+    biar jalur: teks = jala_jalur();
+    kalau jalur != "/masuk" {
+        kalau jalur != "/daftar" { kembali ""; }
+    }
+    biar ok: bool = redis_batas(RDS, "rl:auth:" + klien_ip(), 10, 60);
+    kalau ok == salah {
+        jala_status(429);
+        kembali "Terlalu banyak percobaan. Coba lagi sebentar.";
+    }
+    kembali "";
+}
+
+// (3) CSRF: tolak metode pengubah-state tanpa token _csrf valid.
+fungsi mw_csrf(): teks {
+    biar m: teks = jala_metode();
+    kalau m == "GET" { kembali ""; }
+    kalau m == "HEAD" { kembali ""; }
+    kalau m == "OPTIONS" { kembali ""; }
+    kalau jala_csrf_cek(sid_kini()) == salah {
+        jala_status(419);
+        kembali "Token CSRF tidak valid atau sesi kedaluwarsa. Muat ulang halaman.";
+    }
+    kembali "";
+}

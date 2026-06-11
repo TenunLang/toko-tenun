@@ -49,6 +49,7 @@ routes/
   web.tenun                     rute + grup (/admin, /api)
 app/
   Http/Controllers/             Home, Keranjang, Checkout, Auth, Admin
+  Http/Middleware/Keamanan.tenun  header keamanan, CSRF, rate-limit, escape XSS
   Models/                       Produk, Pengguna, Pesanan (SKEMA ORM saja)
   Services/Cart.tenun           keranjang (Redis)
   Support/Helper.tenun          sesi (Redis), pengguna, rupiah, sajikan()
@@ -60,6 +61,19 @@ resources/views/                Batik (layout, partials, home, keranjang, checko
 public/                         style.css, app.js
 ```
 Model = **definisi skema saja**; query ada di controller (via ORM/qb). Seeder & migrasi terpisah di `database/`.
+
+## Keamanan
+
+Lapisan keamanan didaftarkan global di `index.tenun` via `jala_pakai(...)` (lihat `app/Http/Middleware/Keamanan.tenun`):
+
+- **Header keamanan** tiap respons: `Content-Security-Policy` (object/base/frame dikunci), `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy`.
+- **CSRF**: semua metode pengubah-state (POST/PUT/DELETE/PATCH) wajib token `_csrf` valid (token stabil per sesi, disisipkan tiap `<form>` via `{{csrf}}`). Tanpa token → 419.
+- **Rate-limit** login/daftar: 10 percobaan/menit/IP (Redis), cegah brute force → 429.
+- **Anti XSS**: helper `aman()` meng-escape semua data tak-tepercaya (nama produk, input pencarian, nama pengguna) sebelum masuk HTML. Cookie sesi `sid` diperkeras `HttpOnly; SameSite=Lax`.
+- **Path traversal**: jalur memuat `..` ditolak (400).
+- **Sandi** di-hash (modul `auth`, `auth_hash`/`auth_verifikasi`), bukan plaintext.
+
+Di balik HTTPS (nginx), tambah `; Secure` pada cookie. Sisa yang perlu diperketat: `/keranjang/hapus/:id` masih GET (idealnya POST + CSRF); template Batik render mentah secara default (mengandalkan `aman()` di sisi controller) — pilihan jangka panjang: jadikan escape default di modul `jala`/`tampilan`.
 
 ## Skala besar (10rb–1jt+ pengguna)
 Model **proses stateless** (mirip PHP-FPM):

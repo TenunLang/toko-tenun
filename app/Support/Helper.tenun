@@ -4,7 +4,9 @@ fungsi sid_kini(): teks {
     biar s: teks = web_cookie("sid");
     kalau panjangTeks(s) == 0 {
         s = auth_token_acak(16);
-        web_set_cookie("sid", s);
+        // Cookie sesi diperkeras: tak terbaca JS (HttpOnly), tak ikut request
+        // lintas-situs (SameSite=Lax), umur 1 hari. Tambah "; Secure" via proxy HTTPS.
+        web_set_cookie_opsi("sid", s, "HttpOnly; SameSite=Lax; Max-Age=86400");
     }
     kembali s;
 }
@@ -64,9 +66,14 @@ fungsi sajikan(view: teks, judul: teks, data: peta): teks {
     data["nama_app"] = jala_konfig("nama_app");
     data["ws_url"] = jala_konfig("ws_url");
     data["keranjang_jumlah"] = keTeks(cart_jumlah(sid_kini()));
+    // Token CSRF stabil per sesi (dibuat sekali, dipakai ulang) supaya form di
+    // banyak tab/halaman tetap valid. Sisipkan di tiap <form> POST via {{csrf}}.
+    biar tok: teks = muat("csrf:" + sid_kini());
+    kalau panjangTeks(tok) == 0 { tok = jala_csrf_baru(sid_kini()); }
+    data["csrf"] = "<input type=\"hidden\" name=\"_csrf\" value=\"" + tok + "\">";
     biar email: teks = user_kini();
     kalau panjangTeks(email) > 0 {
-        data["user_nama"] = user_nama(email);
+        data["user_nama"] = aman(user_nama(email));
         data["masuk"] = "1";
     } lain {
         data["user_nama"] = "";

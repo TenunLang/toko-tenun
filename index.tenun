@@ -12,6 +12,7 @@ impor "./app/Models/Pengguna.tenun";
 impor "./app/Models/Pesanan.tenun";
 
 impor "./app/Support/Helper.tenun";
+impor "./app/Http/Middleware/Keamanan.tenun";
 impor "./app/Services/Cart.tenun";
 
 impor "./app/Http/Controllers/Home.tenun";
@@ -23,6 +24,11 @@ impor "./app/Http/Controllers/Admin.tenun";
 impor "./routes/web.tenun";
 
 jala_statik("public");
+
+// Lapisan keamanan global (urut: header -> rate-limit -> CSRF).
+jala_pakai(mw_keamanan);
+jala_pakai(mw_batas_masuk);
+jala_pakai(mw_csrf);
 
 // Koneksi DB/Redis dibuka malas di worker (tiap proxy/worker punya soket sendiri).
 fungsi tangani(metode: teks, jalur: teks, badan: teks): teks {
