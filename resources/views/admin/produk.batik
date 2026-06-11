@@ -6,7 +6,7 @@
   <div class="card card-body shadow-sm border-0">
     <form method="post" action="/admin/produk" class="row g-2">
       <div class="col-md-4"><input name="nama" class="form-control" placeholder="Nama produk" required></div>
-      <div class="col-md-2"><select name="kategori" class="form-select"><option>Batik</option><option>Tenun</option><option>Pakaian</option></select></div>
+      <div class="col-md-2"><select name="kategori" class="form-select"><option>Kemeja</option><option>Dress</option><option>Blouse</option><option>Outer</option><option>Anak</option><option>Bahan</option></select></div>
       <div class="col-md-2"><input name="harga" type="number" class="form-control" placeholder="Harga" required></div>
       <div class="col-md-2"><input name="stok" type="number" class="form-control" placeholder="Stok" required></div>
       <div class="col-md-6"><input name="gambar" class="form-control" placeholder="URL gambar"></div>

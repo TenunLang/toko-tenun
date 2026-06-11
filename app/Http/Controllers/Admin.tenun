@@ -1,4 +1,3 @@
-// Controller Admin — dijaga is_admin().
 
 fungsi admin_dashboard(): teks {
     kalau is_admin() == salah { kembali jala_redirect("/masuk"); }

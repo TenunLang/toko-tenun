@@ -1,4 +1,3 @@
-// Controller Auth — masuk, daftar, keluar.
 
 fungsi masuk_form(): teks {
     kembali sajikan("auth/masuk", "Masuk", peta{ "galat": "" });

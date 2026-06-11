@@ -1,7 +1,7 @@
 {
   "nama": "toko-tenun",
   "versi": "1.0.0",
-  "deskripsi": "Toko Tenun & Batik — e-commerce produksi (kerangka Jala): katalog, keranjang, checkout, admin DataTables, livechat WebSocket. Skalabel via Redis + worker stateless.",
+  "deskripsi": "Toko Tenun — e-commerce produksi (kerangka Jala): katalog tenun ikat/songket, keranjang, checkout, admin DataTables, livechat WebSocket. Skalabel via Redis + worker stateless.",
   "lisensi": "MIT",
   "penulis": "TenunLang",
   "berkas": "index.tenun",

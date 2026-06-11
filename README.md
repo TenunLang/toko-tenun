@@ -1,6 +1,6 @@
-# Toko Tenun & Batik
+# Toko Tenun
 
-E-commerce **wastra Nusantara** (batik, tenun, songket) — bahasa **Tenun**, kerangka **Jala** (MVC), struktur **ala Laravel**. PostgreSQL (via ORM) + Redis (sesi/keranjang) + live chat WebSocket. UI Bootstrap 5 + jQuery + DataTables, responsif.
+E-commerce **tenun Nusantara** (tenun ikat, songket, endek Bali) — bahasa **Tenun**, kerangka **Jala** (MVC), struktur **ala Laravel**. PostgreSQL (via ORM) + Redis (sesi/keranjang) + live chat WebSocket. UI Bootstrap 5 + jQuery + DataTables, responsif.
 
 ## Fitur
 - Etalase: katalog, filter kategori, pencarian, detail produk.
@@ -22,7 +22,7 @@ tenun add redis
 tenun add websocket
 
 tenun database/Migrasi.tenun    # buat tabel
-tenun tools/scrape.tenun        # scrape 30 produk batik asli (modul jaring) -> database/seeders/produk.csv
+tenun tools/scrape.tenun        # (opsional) scraper lama; produk.csv kini berisi 30 produk tenun
 tenun database/Seeder.tenun     # isi produk (dari produk.csv) + admin
 
 # Web + live chat jadi SATU proses (WebSocket di port yang sama, 8080):

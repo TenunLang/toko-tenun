@@ -1,4 +1,3 @@
-// Controller Home — katalog gaya marketplace mobile.
 
 fungsi _kartu(p: peta): teks {
     kembali "<div class=\"col-6 col-md-4 col-lg-3 mb-3\">" +

@@ -1,4 +1,4 @@
-// Toko Tenun & Batik — titik masuk. Jalankan: tenun
+// Toko Tenun — titik masuk. Jalankan: tenun
 // Pastikan migrasi & seed sudah dijalankan:
 //   tenun database/Migrasi.tenun
 //   tenun database/Seeder.tenun

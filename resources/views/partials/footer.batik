@@ -3,20 +3,20 @@
     <div class="row g-4">
       <div class="col-md-4">
         <h5 class="fw-bold"><i class="bi bi-bag-heart"></i> {{nama_app}}</h5>
-        <p class="small text-white-50">Wastra Nusantara asli: batik tulis, tenun ikat, songket. Dari pengrajin untuk Indonesia.</p>
+        <p class="small text-white-50">Tenun Nusantara asli: tenun ikat, songket, endek Bali. Dari perajin untuk Indonesia.</p>
       </div>
       <div class="col-md-4">
         <h6 class="fw-bold">Kategori</h6>
         <ul class="list-unstyled small">
-          <li><a class="link-light text-decoration-none" href="/?kategori=Batik">Batik</a></li>
-          <li><a class="link-light text-decoration-none" href="/?kategori=Tenun">Tenun</a></li>
-          <li><a class="link-light text-decoration-none" href="/?kategori=Pakaian">Pakaian</a></li>
+          <li><a class="link-light text-decoration-none" href="/?kategori=Kemeja">Kemeja</a></li>
+          <li><a class="link-light text-decoration-none" href="/?kategori=Dress">Dress</a></li>
+          <li><a class="link-light text-decoration-none" href="/?kategori=Bahan">Bahan</a></li>
         </ul>
       </div>
       <div class="col-md-4">
         <h6 class="fw-bold">Bantuan</h6>
         <p class="small text-white-50 mb-1"><i class="bi bi-chat-dots"></i> Live chat (pojok kanan bawah).</p>
-        <p class="small text-white-50"><i class="bi bi-envelope"></i> halo@tenunbatik.id</p>
+        <p class="small text-white-50"><i class="bi bi-envelope"></i> halo@tokotenun.id</p>
       </div>
     </div>
     <hr class="border-secondary">

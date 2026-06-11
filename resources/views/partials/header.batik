@@ -4,7 +4,7 @@
     <button class="navbar-toggler text-white border-0" data-bs-toggle="collapse" data-bs-target="#nav"><i class="bi bi-list fs-3"></i></button>
     <div class="collapse navbar-collapse" id="nav">
       <form class="d-flex searchbar mx-lg-auto my-2 my-lg-0" action="/" method="get" style="max-width:460px;width:100%">
-        <input class="form-control me-2" name="cari" placeholder="Cari batik, dress, kemeja...">
+        <input class="form-control me-2" name="cari" placeholder="Cari tenun, dress, kemeja...">
         <button class="btn btn-light" type="submit"><i class="bi bi-search text-merah"></i></button>
       </form>
       <ul class="navbar-nav ms-lg-3 align-items-lg-center">
