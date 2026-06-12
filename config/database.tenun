@@ -1,25 +1,26 @@
 // Koneksi PostgreSQL (ORM) + Redis. Handle global dipakai seluruh app.
-// Kredensial dari env (fallback default lokal).
+// Kredensial dari .env / env OS (lihat config/env.tenun), fallback default lokal.
 impor "orm";
 impor "redis";
 
 biar DB: bulat = 0 - 1;
 biar RDS: bulat = 0 - 1;
 
-fungsi env_atau(nama: teks, fallback: teks): teks {
-    biar v: teks = lingkungan(nama);
-    kalau panjangTeks(v) == 0 { kembali fallback; }
-    kembali v;
-}
-
 fungsi db_init(): kosong {
     DB = orm_sambung("postgres",
-        env_atau("PGHOST", "127.0.0.1"),
-        keBulat(env_atau("PGPORT", "5432")),
-        env_atau("PGUSER", "postgres"),
-        env_atau("PGPASSWORD", "postgres"),
-        env_atau("PGDATABASE", "toko_tenun"));
+        dotenv_ambil("PGHOST", "127.0.0.1"),
+        keBulat(dotenv_ambil("PGPORT", "5432")),
+        dotenv_ambil("PGUSER", "postgres"),
+        dotenv_ambil("PGPASSWORD", "postgres"),
+        dotenv_ambil("PGDATABASE", "toko_tenun"));
+
     RDS = redis_sambung(
-        env_atau("REDIS_HOST", "127.0.0.1"),
-        keBulat(env_atau("REDIS_PORT", "6379")));
+        dotenv_ambil("REDIS_HOST", "127.0.0.1"),
+        keBulat(dotenv_ambil("REDIS_PORT", "6379")));
+    // AUTH bila REDIS_PASSWORD diset (Redis dengan requirepass).
+    biar rpass: teks = dotenv_ambil("REDIS_PASSWORD", "");
+    kalau panjangTeks(rpass) > 0 { redis_auth(RDS, rpass); }
+    // Pilih nomor DB bila REDIS_DB diset.
+    biar rdb: teks = dotenv_ambil("REDIS_DB", "");
+    kalau panjangTeks(rdb) > 0 { redis_pilih(RDS, keBulat(rdb)); }
 }

@@ -4,6 +4,7 @@
 //   tenun database/Seeder.tenun
 impor "jala";
 
+impor "dotenv";
 impor "./config/app.tenun";
 impor "./config/database.tenun";
 
@@ -37,6 +38,6 @@ fungsi tangani(metode: teks, jalur: teks, badan: teks): teks {
 }
 
 // Port dari env (.env / TENUN_PORT), fallback 8080.
-biar port: bulat = keBulat(env_atau("TENUN_PORT", "8080"));
+biar port: bulat = keBulat(dotenv_ambil("TENUN_PORT", "8080"));
 cetak("Toko Tenun jalan di http://localhost:" + keTeks(port));
 jala_layani(port);
