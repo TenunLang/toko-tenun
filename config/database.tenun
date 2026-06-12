@@ -1,7 +1,8 @@
 // Koneksi PostgreSQL (ORM) + Redis. Handle global dipakai seluruh app.
-// Kredensial dari .env / env OS (lihat config/env.tenun), fallback default lokal.
+// Kredensial dari .env / env OS (modul dotenv), fallback default lokal.
 impor "orm";
 impor "redis";
+impor "dotenv";
 
 biar DB: bulat = 0 - 1;
 biar RDS: bulat = 0 - 1;
